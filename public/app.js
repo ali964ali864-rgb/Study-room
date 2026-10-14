@@ -549,6 +549,48 @@ $("themeToggle").textContent =
     ? "☀"
     : "☾";
 
+/* =========================================================
+   FULLSCREEN
+   ========================================================= */
+
+const fullscreenBtn = $("fullscreenBtn");
+
+fullscreenBtn.onclick = async () => {
+
+  try {
+
+    if (!document.fullscreenElement) {
+
+      await document.documentElement.requestFullscreen();
+
+    } else {
+
+      await document.exitFullscreen();
+
+    }
+
+  } catch (_) {}
+
+};
+
+document.addEventListener(
+  "fullscreenchange",
+  () => {
+
+    const isFullscreen =
+      !!document.fullscreenElement;
+
+    fullscreenBtn.textContent =
+      isFullscreen ? "⛶" : "⛶";
+
+    fullscreenBtn.title =
+      isFullscreen
+        ? "Exit fullscreen"
+        : "Enter fullscreen";
+
+  }
+);
+
 
 /* =========================================================
    CREATE ROOM
