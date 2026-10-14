@@ -1272,12 +1272,31 @@ const backgroundStyles = {
     value: "linear-gradient(135deg, #10251c 0%, #183b2a 45%, #07110c 100%)"
   },
 
-  rain: {
+  rainStatic: {
     type: "gradient",
     value: "linear-gradient(135deg, #172332 0%, #26384d 50%, #0b1119 100%)"
+  },
+
+  rain: {
+    type: "video",
+    value: "/backgrounds/rain.mp4"
+  },
+
+  thunderstorm: {
+    type: "video",
+    value: "/backgrounds/thunderstorm.mp4"
+  },
+
+  desk1: {
+    type: "video",
+    value: "/backgrounds/desk1.mp4"
+  },
+
+  desk2: {
+    type: "video",
+    value: "/backgrounds/desk2.mp4"
   }
 };
-
 backgroundBtn.onclick = () => {
   backgroundDialog.showModal();
 };
