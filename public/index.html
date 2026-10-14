@@ -64,6 +64,14 @@
 </head>
 
 <body>
+  <video
+  id="backgroundVideo"
+  class="background-video"
+  autoplay
+  muted
+  loop
+  playsinline
+></video>
 
   <div class="ambient ambient-one"></div>
   <div class="ambient ambient-two"></div>
@@ -78,6 +86,13 @@
       </div>
 
       <div class="top-actions">
+        <button
+  id="backgroundBtn"
+  class="icon-btn"
+  title="Change background"
+>
+  🖼️
+</button>
 
         <button id="themeToggle" class="icon-btn" title="Toggle theme">
           ☀️
@@ -581,6 +596,76 @@
     </main>
 
   </div>
+  <!-- BACKGROUND SETTINGS -->
+
+<dialog id="backgroundDialog">
+
+  <form method="dialog" class="background-settings">
+
+    <button
+      class="close"
+      value="cancel"
+    >
+      ×
+    </button>
+
+    <h3>
+      Background
+    </h3>
+
+    <p class="muted">
+      Choose your personal study-room background.
+    </p>
+
+    <div class="background-options">
+
+      <button type="button" class="background-option" data-background="default">
+        🌌
+        <span>Default</span>
+      </button>
+
+      <button type="button" class="background-option" data-background="night">
+        🌙
+        <span>Night</span>
+      </button>
+
+      <button type="button" class="background-option" data-background="forest">
+        🌲
+        <span>Forest</span>
+      </button>
+
+      <button type="button" class="background-option" data-background="rain">
+        🌧️
+        <span>Rain</span>
+      </button>
+
+    </div>
+
+    <label class="background-opacity">
+
+      Background opacity
+
+      <input
+        id="backgroundOpacity"
+        type="range"
+        min="0.35"
+        max="1"
+        step="0.01"
+        value="0.78"
+      >
+
+    </label>
+
+    <button
+      type="button"
+      id="resetBackground"
+    >
+      Reset background
+    </button>
+
+  </form>
+
+</dialog>
 
 
 

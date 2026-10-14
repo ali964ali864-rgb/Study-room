@@ -1240,3 +1240,146 @@ ambienceButtons.forEach(button => {
     button.dataset.sound === savedAmbience
   );
 });
+/* =========================
+   BACKGROUND SETTINGS
+   ========================= */
+
+const backgroundDialog = $("backgroundDialog");
+const backgroundBtn = $("backgroundBtn");
+
+const backgroundOptions =
+  document.querySelectorAll(".background-option");
+
+const backgroundOpacity =
+  $("backgroundOpacity");
+
+const resetBackground =
+  $("resetBackground");
+
+const backgroundStyles = {
+  default: {
+    type: "color",
+    value: ""
+  },
+
+  night: {
+    type: "gradient",
+    value: "radial-gradient(circle at 20% 20%, #20263d 0%, #0b0d12 55%, #050608 100%)"
+  },
+
+  forest: {
+    type: "gradient",
+    value: "linear-gradient(135deg, #10251c 0%, #183b2a 45%, #07110c 100%)"
+  },
+
+  rain: {
+    type: "gradient",
+    value: "linear-gradient(135deg, #172332 0%, #26384d 50%, #0b1119 100%)"
+  }
+};
+
+backgroundBtn.onclick = () => {
+  backgroundDialog.showModal();
+};
+
+function applyBackground(name, opacity) {
+
+  const bg =
+    backgroundStyles[name] ||
+    backgroundStyles.default;
+
+  if (bg.type === "gradient") {
+    document.body.style.background = bg.value;
+  } else {
+    document.body.style.background = "";
+  }
+
+  document.querySelectorAll(
+    ".card, .timer-card"
+  ).forEach(el => {
+    el.style.background =
+      `rgba(15, 18, 25, ${opacity})`;
+  });
+
+  backgroundOptions.forEach(option => {
+    option.classList.toggle(
+      "active",
+      option.dataset.background === name
+    );
+  });
+
+  localStorage.setItem(
+    "study-room-background",
+    name
+  );
+
+  localStorage.setItem(
+    "study-room-background-opacity",
+    opacity
+  );
+}
+
+backgroundOptions.forEach(option => {
+
+  option.addEventListener("click", () => {
+
+    const name =
+      option.dataset.background;
+
+    applyBackground(
+      name,
+      Number(backgroundOpacity.value)
+    );
+
+  });
+
+});
+
+backgroundOpacity.addEventListener(
+  "input",
+  () => {
+
+    const name =
+      localStorage.getItem(
+        "study-room-background"
+      ) || "default";
+
+    applyBackground(
+      name,
+      Number(backgroundOpacity.value)
+    );
+
+  }
+);
+
+resetBackground.addEventListener(
+  "click",
+  () => {
+
+    backgroundOpacity.value = "0.78";
+
+    applyBackground(
+      "default",
+      0.78
+    );
+
+  }
+);
+
+const savedBackground =
+  localStorage.getItem(
+    "study-room-background"
+  ) || "default";
+
+const savedBackgroundOpacity =
+  localStorage.getItem(
+    "study-room-background-opacity"
+  ) || "0.78";
+
+backgroundOpacity.value =
+  savedBackgroundOpacity;
+
+applyBackground(
+  savedBackground,
+  Number(savedBackgroundOpacity)
+);
