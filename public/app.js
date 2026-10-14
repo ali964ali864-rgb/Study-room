@@ -1319,22 +1319,25 @@ function applyBackground(name, opacity) {
 
   // Reset normal background
   document.body.style.background = "";
+  document.body.classList.remove("video-background");
 
   if (bg.type === "gradient") {
 
     document.body.style.background =
       bg.value;
 
-  } else if (bg.type === "video") {
+ } else if (bg.type === "video") {
 
-    if (video) {
-      video.src = bg.value;
-      video.load();
+  document.body.classList.add("video-background");
 
-      video.play().catch(() => {});
-    }
+  if (video) {
+    video.src = bg.value;
+    video.load();
 
+    video.play().catch(() => {});
   }
+
+}
 
   // Card transparency
   document.querySelectorAll(
