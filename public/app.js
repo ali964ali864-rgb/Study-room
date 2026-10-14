@@ -1288,18 +1288,17 @@ const backgroundStyles = {
 function applyBackground(name, opacity) {
   const bg = backgroundStyles[name] || backgroundStyles.default;
 
-  document.body.style.background =
-    bg.image || bg.color || "";
+  if (bg.type === "gradient") {
+    document.body.style.background = bg.value;
+  } else {
+    document.body.style.background = "";
+  }
 
   document.body.style.setProperty(
     "--background-opacity",
     opacity
   );
 
-  /*
-    Make the main UI slightly transparent so
-    the background can be seen underneath.
-  */
   document.querySelectorAll(
     ".card, .timer-card"
   ).forEach(el => {
@@ -1324,51 +1323,3 @@ function applyBackground(name, opacity) {
     opacity
   );
 }
-
-backgroundOptions.forEach(option => {
-  option.addEventListener("click", () => {
-    const name = option.dataset.background;
-
-    applyBackground(
-      name,
-      Number(backgroundOpacity.value)
-    );
-  });
-});
-
-backgroundOpacity.addEventListener("input", () => {
-  const name =
-    localStorage.getItem("study-room-background") ||
-    "default";
-
-  applyBackground(
-    name,
-    Number(backgroundOpacity.value)
-  );
-});
-
-resetBackground.addEventListener("click", () => {
-  backgroundOpacity.value = "0.78";
-
-  applyBackground(
-    "default",
-    0.78
-  );
-});
-
-const savedBackground =
-  localStorage.getItem("study-room-background") ||
-  "default";
-
-const savedBackgroundOpacity =
-  localStorage.getItem(
-    "study-room-background-opacity"
-  ) || "0.78";
-
-backgroundOpacity.value =
-  savedBackgroundOpacity;
-
-applyBackground(
-  savedBackground,
-  Number(savedBackgroundOpacity)
-);
