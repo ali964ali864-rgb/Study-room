@@ -28,6 +28,7 @@ function getRoom(code) {
 function roomState(room) {
   return {
     code: room.code,
+    type: room.type,
     timer: room.timer,
     users: [...room.users.values()].map(u => ({
       id: u.id,
