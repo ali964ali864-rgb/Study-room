@@ -2,6 +2,7 @@ const socket = io();
 
 const $ = id => document.getElementById(id);
 const lobby = $("lobby"), room = $("room");
+const room2d = $("room2d");
 const nameInput = $("nameInput"), codeInput = $("codeInput");
 const lobbyError = $("lobbyError");
 const timerEl = $("timer"), phaseEl = $("phase"), progressBar = $("progressBar");
@@ -221,10 +222,13 @@ function enterRoom(nextState) {
 
   if (state.type === "2d") {
     room.classList.add("hidden");
+    room2d.classList.add("hidden");
     $("characterSelect").classList.remove("hidden");
   } else {
     $("characterSelect").classList.add("hidden");
+    room2d.classList.add("hidden");
     room.classList.remove("hidden");
+    
   }
 
   $("roomBadge").classList.remove("hidden");
@@ -270,7 +274,11 @@ document
 $("enter2dRoomBtn").onclick = () => {
 
   $("characterSelect").classList.add("hidden");
-  room.classList.remove("hidden");
+  room.classList.add("hidden");
+  room2d.classList.remove("hidden");
+
+  $("roomCode2d").textContent =
+    state.code;
 
   console.log(
     "Selected character:",
