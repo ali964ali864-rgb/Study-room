@@ -1250,3 +1250,125 @@ const backgroundBtn = $("backgroundBtn");
 backgroundBtn.onclick = () => {
   backgroundDialog.showModal();
 };
+/* =========================
+   BACKGROUND FUNCTIONALITY
+   ========================= */
+
+const backgroundOptions =
+  document.querySelectorAll(".background-option");
+
+const backgroundOpacity =
+  $("backgroundOpacity");
+
+const resetBackground =
+  $("resetBackground");
+
+const backgroundStyles = {
+  default: {
+    image: "",
+    color: ""
+  },
+
+  night: {
+    image: "radial-gradient(circle at 20% 20%, #20263d 0%, #0b0d12 55%, #050608 100%)",
+    color: "#0b0d12"
+  },
+
+  forest: {
+    image: "linear-gradient(135deg, #10251c 0%, #183b2a 45%, #07110c 100%)",
+    color: "#07110c"
+  },
+
+  rain: {
+    image: "linear-gradient(135deg, #172332 0%, #26384d 50%, #0b1119 100%)",
+    color: "#0b1119"
+  }
+};
+
+function applyBackground(name, opacity) {
+  const bg = backgroundStyles[name] || backgroundStyles.default;
+
+  document.body.style.background =
+    bg.image || bg.color || "";
+
+  document.body.style.setProperty(
+    "--background-opacity",
+    opacity
+  );
+
+  /*
+    Make the main UI slightly transparent so
+    the background can be seen underneath.
+  */
+  document.querySelectorAll(
+    ".card, .timer-card"
+  ).forEach(el => {
+    el.style.background =
+      `rgba(15, 18, 25, ${opacity})`;
+  });
+
+  backgroundOptions.forEach(option => {
+    option.classList.toggle(
+      "active",
+      option.dataset.background === name
+    );
+  });
+
+  localStorage.setItem(
+    "study-room-background",
+    name
+  );
+
+  localStorage.setItem(
+    "study-room-background-opacity",
+    opacity
+  );
+}
+
+backgroundOptions.forEach(option => {
+  option.addEventListener("click", () => {
+    const name = option.dataset.background;
+
+    applyBackground(
+      name,
+      Number(backgroundOpacity.value)
+    );
+  });
+});
+
+backgroundOpacity.addEventListener("input", () => {
+  const name =
+    localStorage.getItem("study-room-background") ||
+    "default";
+
+  applyBackground(
+    name,
+    Number(backgroundOpacity.value)
+  );
+});
+
+resetBackground.addEventListener("click", () => {
+  backgroundOpacity.value = "0.78";
+
+  applyBackground(
+    "default",
+    0.78
+  );
+});
+
+const savedBackground =
+  localStorage.getItem("study-room-background") ||
+  "default";
+
+const savedBackgroundOpacity =
+  localStorage.getItem(
+    "study-room-background-opacity"
+  ) || "0.78";
+
+backgroundOpacity.value =
+  savedBackgroundOpacity;
+
+applyBackground(
+  savedBackground,
+  Number(savedBackgroundOpacity)
+);
