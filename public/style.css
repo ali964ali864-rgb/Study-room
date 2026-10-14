@@ -157,3 +157,91 @@ button,input{font:inherit} button{cursor:pointer;border:0;color:var(--text)} inp
     min-height: 54px;
   }
 }
+/* =========================
+   BACKGROUND SETTINGS
+   ========================= */
+
+#backgroundDialog {
+  width: min(420px, calc(100% - 32px));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(15, 18, 25, 0.96);
+  color: var(--text);
+  box-shadow: 0 24px 80px rgba(0,0,0,.45);
+}
+
+#backgroundDialog::backdrop {
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(5px);
+}
+
+.background-settings {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.background-settings h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.background-settings > p {
+  margin: -8px 0 2px;
+}
+
+.background-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.background-option {
+  min-height: 90px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 25px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: .2s ease;
+}
+
+.background-option span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.background-option:hover {
+  transform: translateY(-2px);
+  border-color: rgba(155,140,255,.5);
+}
+
+.background-option.active {
+  border-color: rgba(155,140,255,.7);
+  background: rgba(155,140,255,.12);
+}
+
+.background-opacity {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.background-opacity input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+#resetBackground {
+  width: 100%;
+}
