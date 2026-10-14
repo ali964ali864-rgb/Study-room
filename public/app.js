@@ -213,6 +213,7 @@ function showError(msg) {
 
 function enterRoom(nextState) {
   state = nextState;
+  document.body.dataset.roomType=state.type||"normal";
 
   lobby.classList.add("hidden");
   room.classList.remove("hidden");
