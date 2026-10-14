@@ -595,6 +595,29 @@ document.addEventListener(
 /* =========================================================
    CREATE ROOM
    ========================================================= */
+let selectedRoomType = "normal";
+
+document
+  .querySelectorAll(".room-type-btn")
+  .forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+      selectedRoomType =
+        btn.dataset.roomType;
+
+      document
+        .querySelectorAll(".room-type-btn")
+        .forEach(b =>
+          b.classList.toggle(
+            "active",
+            b === btn
+          )
+        );
+
+    });
+
+  });
 
 $("createBtn").onclick = () => {
 
@@ -606,7 +629,8 @@ $("createBtn").onclick = () => {
 
   socket.emit(
     "create-room",
-    { name: myName },
+    { name: myName ,
+    type: selectedRoomType},
     result => {
 
       if (!result.ok) {
