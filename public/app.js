@@ -69,9 +69,10 @@ function enterRoom(nextState) {
 
 function renderState() {
   if (!state) return;
-  $("peopleCount").textContent = state.users.length;
-  $("studyingCount").textContent = state.users.filter(u => u.status === "studying").length;
-  $("membersList").innerHTML = state.users.map(u => `
+  const users = Array.isArray(state.users) ? state.users : [];
+  $("peopleCount").textContent = users.length;
+  $("studyingCount").textContent = users.filter(u => u.status === "studying").length;
+  $("membersList").innerHTML = users.map(u => `
     <div class="member">
       <div class="avatar">${escapeHtml(u.name.slice(0,1).toUpperCase())}</div>
       <div class="member-info">
@@ -120,7 +121,7 @@ function renderSessionCount() {
 }
 
 function setStatusUI() {
-  const current = state?.users.find(u => u.name === myName);
+  const current = (state?.users || []).find(u => u.id === socket.id || u.name === myName);
   const status = current?.status || "studying";
   document.querySelectorAll(".status-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.status === status));
 }
@@ -217,13 +218,16 @@ $("skipBtn").onclick = () => {
   socket.emit("timer-action", {action: "skip"});
 };
 
+$("addTaskBtn").type = "button";
 $("addTaskBtn").onclick = () => {
   const input = $("taskInput");
   const text = input.value.trim();
-  if (!text) return input.focus();
-  socket.emit("add-task", {text});
-  input.value = "";
-  input.focus();
+  if (!text) { input.focus(); return; }
+  socket.emit("add-task", { text }, result => {
+    if (result && !result.ok) { toast(result.error || "Couldn't add task"); return; }
+    input.value = "";
+    input.focus();
+  });
 };
 $("taskInput").addEventListener("keydown", e => {
   if (e.key === "Enter") { e.preventDefault(); $("addTaskBtn").click(); }
@@ -253,11 +257,14 @@ $("copyRoom").onclick = async () => {
   catch (_) { toast(`Room code: ${state.code}`); }
 };
 
-// Status buttons
-$("statusPicker").addEventListener("click", e => {
-  const btn = e.target.closest(".status-btn");
-  if (!btn) return;
-  socket.emit("set-status", {status: btn.dataset.status});
+// Status buttons — bind directly so every status option is reliably clickable.
+document.querySelectorAll(".status-btn").forEach(btn => {
+  btn.type = "button";
+  btn.addEventListener("click", () => {
+    const status = btn.dataset.status;
+    if (!["studying", "break", "afk"].includes(status)) return;
+    socket.emit("set-status", { status });
+  });
 });
 
 // Emoji picker
