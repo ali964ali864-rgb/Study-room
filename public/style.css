@@ -356,3 +356,127 @@ body.video-background {
 body[data-room-type="2d"] .room {
   /* 2D room will go here */
 }
+/* =========================
+   2D CHARACTER SELECTION
+   ========================= */
+
+.character-select {
+  min-height: calc(100vh - 90px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 16px;
+}
+
+.character-select.hidden {
+  display: none;
+}
+
+.character-select-card {
+  width: min(900px, 100%);
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: rgba(15, 18, 25, 0.88);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .35);
+  text-align: center;
+}
+
+.character-select-card h2 {
+  margin: 8px 0;
+  font-size: clamp(28px, 5vw, 42px);
+}
+
+.character-select-card > p {
+  margin: 0 0 26px;
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.character-option {
+  min-height: 260px;
+  padding: 18px 12px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--panel-2);
+  color: var(--text);
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font: inherit;
+  transition: .2s ease;
+}
+
+.character-option:hover {
+  transform: translateY(-4px);
+  border-color: rgba(155,140,255,.55);
+}
+
+.character-option.active {
+  border-color: rgba(155,140,255,.9);
+  background: rgba(155,140,255,.13);
+  box-shadow:
+    0 0 0 2px rgba(155,140,255,.12),
+    0 12px 35px rgba(0,0,0,.2);
+}
+
+.character-preview {
+  width: 150px;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 90px;
+  image-rendering: pixelated;
+}
+
+.character-option b {
+  font-size: 15px;
+}
+
+.character-option small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+#enter2dRoomBtn {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+#backFromCharacterBtn {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+
+  .character-select-card {
+    padding: 22px 16px;
+  }
+
+  .character-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .character-option {
+    min-height: 210px;
+  }
+
+  .character-preview {
+    width: 110px;
+    height: 120px;
+    font-size: 65px;
+  }
+}
