@@ -97,9 +97,9 @@ function createRoom(code, type="normal") {
 }
 
 io.on("connection", socket => {
-  socket.on("create-room", ({ name }, reply) => {
+  socket.on("create-room", ({ name, type }, reply) => {
     const code = makeRoomCode();
-    const room = createRoom(code);
+    const room = createRoom(code,type);
     rooms.set(code, room);
     joinRoom(socket, room, name, reply);
   });
