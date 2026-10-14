@@ -281,3 +281,71 @@ body.video-background .background-video {
 body.video-background {
   background: #080a0f;
 }
+/* =========================
+   ROOM TYPE SELECTION
+   ========================= */
+
+.room-type-choice {
+  margin-top: 18px;
+}
+
+.room-type-choice > label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.room-type-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.room-type-btn {
+  min-height: 72px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  text-align: left;
+  transition: .2s ease;
+}
+
+.room-type-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(155,140,255,.5);
+}
+
+.room-type-btn.active {
+  border-color: rgba(155,140,255,.8);
+  background: rgba(155,140,255,.12);
+  box-shadow: 0 0 0 1px rgba(155,140,255,.15);
+}
+
+.room-type-btn > span:first-child {
+  font-size: 25px;
+}
+
+.room-type-btn span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.room-type-btn b {
+  font-size: 14px;
+}
+
+.room-type-btn small {
+  font-size: 11px;
+  color: var(--muted);
+}
