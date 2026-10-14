@@ -56,10 +56,24 @@
               </div>
             </div>
 
+            <div class="task-card card">
+              <div class="section-title"><span>Room task</span><span>Shared</span></div>
+              <div class="task-row">
+                <input id="taskInput" maxlength="120" placeholder="What are we working on?">
+                <button id="saveTask" class="primary">Set task</button>
+              </div>
+              <div id="taskDisplay" class="task-display hidden">
+                <button id="taskCheck" class="task-check" aria-label="Complete task">✓</button>
+                <span id="taskText"></span>
+              </div>
+            </div>
+
             <div class="members card">
               <div class="section-title"><span>People in room</span><span id="roomCodeSmall"></span></div>
               <div id="membersList"></div>
             </div>
+
+            <button id="leaveBtn" class="leave-btn">Leave room</button>
           </div>
 
           <aside class="chat card">
