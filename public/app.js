@@ -8,6 +8,50 @@ const timerEl = $("timer"), phaseEl = $("phase"), progressBar = $("progressBar")
 
 let myName = "";
 let state = null;
+let audioContext = null;
+
+function unlockAudio() {
+  try {
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioContext.state === "suspended") audioContext.resume();
+  } catch (_) {}
+}
+
+function playSessionEndSound() {
+  try {
+    unlockAudio();
+    if (!audioContext) return;
+    const now = audioContext.currentTime;
+    [0, 0.18, 0.36].forEach((offset, i) => {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.type = "sine";
+      osc.frequency.value = i === 2 ? 880 : 660;
+      gain.gain.setValueAtTime(0.0001, now + offset);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + offset + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.16);
+      osc.connect(gain).connect(audioContext.destination);
+      osc.start(now + offset);
+      osc.stop(now + offset + 0.18);
+    });
+  } catch (_) {}
+}
+
+async function requestNotifications() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "default") {
+    try { await Notification.requestPermission(); } catch (_) {}
+  }
+}
+
+function sendSessionNotification(phase) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const isBreak = phase === "break";
+  new Notification(isBreak ? "Study session finished" : "Break is over", {
+    body: isBreak ? "Time for your break 🌿" : "Back to studying.",
+    tag: "study-room-session"
+  });
+}
 
 function showError(msg) { lobbyError.textContent = msg; }
 
@@ -34,7 +78,23 @@ function renderState() {
 
   $("studyMinutes").value = state.timer.studyMinutes;
   $("breakMinutes").value = state.timer.breakMinutes;
+  renderTask();
   renderTimer(state.timer);
+}
+
+function renderTask() {
+  const task = state?.task || { text: "", completed: false };
+  const display = $("taskDisplay");
+  const input = $("taskInput");
+  if (!task.text) {
+    display.classList.add("hidden");
+    input.value = "";
+    return;
+  }
+  display.classList.remove("hidden");
+  $("taskText").textContent = task.text;
+  display.classList.toggle("completed", !!task.completed);
+  input.value = task.text;
 }
 
 function renderTimer(t) {
@@ -60,6 +120,8 @@ function escapeHtml(s) {
 
 $("createBtn").onclick = () => {
   myName = nameInput.value.trim() || "Guest";
+  unlockAudio();
+  requestNotifications();
   socket.emit("create-room", {name: myName}, result => {
     if (!result.ok) return showError(result.error);
     enterRoom(result.state);
@@ -69,6 +131,8 @@ $("createBtn").onclick = () => {
 
 $("joinBtn").onclick = () => {
   myName = nameInput.value.trim() || "Guest";
+  unlockAudio();
+  requestNotifications();
   const code = codeInput.value.trim().toUpperCase();
   if (!code) return showError("Enter a room code.");
   socket.emit("join-room", {code, name: myName}, result => {
@@ -81,10 +145,41 @@ $("joinBtn").onclick = () => {
 codeInput.addEventListener("input", e => e.target.value = e.target.value.toUpperCase());
 
 $("startBtn").onclick = () => {
+  unlockAudio();
+  requestNotifications();
   socket.emit("timer-action", {action: state?.timer.running ? "pause" : "start"});
 };
 $("resetBtn").onclick = () => socket.emit("timer-action", {action: "reset"});
-$("skipBtn").onclick = () => socket.emit("timer-action", {action: "skip"});
+$("skipBtn").onclick = () => {
+  unlockAudio();
+  socket.emit("timer-action", {action: "skip"});
+};
+
+$("saveTask").onclick = () => {
+  socket.emit("set-task", { text: $("taskInput").value });
+};
+
+$("taskInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    $("saveTask").click();
+  }
+});
+
+$("taskCheck").onclick = () => socket.emit("toggle-task");
+
+$("leaveBtn").onclick = () => {
+  if (!confirm("Leave this room?")) return;
+  socket.emit("leave-room");
+  state = null;
+  room.classList.add("hidden");
+  lobby.classList.remove("hidden");
+  $("roomBadge").classList.add("hidden");
+  $("messages").innerHTML = "";
+  $("taskInput").value = "";
+  showError("");
+  toast("You left the room");
+};
 
 $("settingsBtn").onclick = () => $("settingsDialog").showModal();
 $("saveSettings").onclick = e => {
@@ -130,6 +225,8 @@ socket.on("message", msg => {
 });
 
 socket.on("timer-finished", ({phase}) => {
+  playSessionEndSound();
+  sendSessionNotification(phase);
   toast(phase === "break" ? "Study session finished — break time 🌿" : "Break's over — back to work.");
 });
 
