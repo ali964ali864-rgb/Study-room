@@ -244,4 +244,18 @@ button,input{font:inherit} button{cursor:pointer;border:0;color:var(--text)} inp
 
 #resetBackground {
   width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+#resetBackground:hover {
+  border-color: rgba(155,140,255,.5);
+  background: rgba(155,140,255,.08);
 }
