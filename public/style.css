@@ -732,3 +732,44 @@ body[data-room-type="2d"] .room {
     width: 62%;
   }
 }
+/* =========================
+   2D CHARACTERS
+   ========================= */
+
+.characters-2d {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.pixel-character {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transform: translate(-50%, -50%);
+}
+
+/* Four seats around the table */
+
+#character-male1 {
+  left: 38%;
+  top: 67%;
+}
+
+#character-male2 {
+  left: 62%;
+  top: 67%;
+}
+
+#character-female1 {
+  left: 38%;
+  top: 83%;
+}
+
+#character-female2 {
+  left: 62%;
+  top: 83%;
+}
