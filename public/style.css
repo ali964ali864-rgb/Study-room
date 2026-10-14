@@ -23,3 +23,52 @@ button,input{font:inherit} button{cursor:pointer;border:0;color:var(--text)} inp
 @keyframes rise{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}@keyframes pop{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}@keyframes messageIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}@keyframes sessionFinish{50%{transform:scale(1.012);box-shadow:0 0 0 5px rgba(155,140,255,.08),0 22px 80px rgba(111,99,255,.25)}}@keyframes timerPop{50%{transform:scale(1.035)} }@keyframes sparkle{0%{opacity:0;transform:translate(0,12px) scale(.5)}45%{opacity:1}100%{opacity:0;transform:translate(30px,-25px) scale(1.3)}}@keyframes pulseGlow{50%{opacity:1}}@keyframes float{}
 @media(max-width:600px){.lobby{grid-template-columns:1fr;gap:30px;padding:40px 0}.room-grid{grid-template-columns:1fr}.chat{height:560px;min-height:0}.timer-card h2{font-size:90px}}
 @media(max-width:560px){.app{padding:0 12px 28px}.topbar{height:64px}.hero h1{font-size:44px}.timer-card{padding:20px}.timer-card h2{font-size:70px}.timer-controls{flex-wrap:wrap}.timer-controls .big{flex:1}.status-btn span{display:block;font-size:11px;margin-top:3px}.task-row{flex-direction:column}.task-row button{width:100%}.chat{height:520px}.room-badge{font-size:9px}.room-badge b{margin:0 4px}}
+.room-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 360px !important;
+  gap: 20px !important;
+  width: 100% !important;
+  align-items: start !important;
+}
+
+.main-panel {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.chat {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: calc(100vh - 112px) !important;
+  min-height: 580px !important;
+  position: sticky !important;
+  top: 18px !important;
+  overflow: hidden !important;
+}
+
+/* Keep the chat beside the timer on laptops/desktops */
+@media (min-width: 761px) {
+  .room-grid {
+    grid-template-columns: minmax(0, 1fr) 360px !important;
+  }
+
+  .chat {
+    display: flex !important;
+  }
+}
+
+/* Only stack on genuinely small screens */
+@media (max-width: 760px) {
+  .room-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .chat {
+    position: relative !important;
+    top: auto !important;
+    height: 560px !important;
+    min-height: 0 !important;
+  }
+}
