@@ -31,9 +31,11 @@ function roomState(room) {
     timer: room.timer,
     users: [...room.users.values()].map(u => ({
       id: u.id,
-      name: u.name
+      name: u.name,
+      status: u.status || "studying"
     })),
-    task: room.task
+    tasks: room.tasks,
+    sessionsCompleted: room.sessionsCompleted
   };
 }
 
@@ -62,7 +64,12 @@ function startTimer(room) {
       room.timer.remaining = room.timer.phase === "study"
         ? room.timer.breakMinutes * 60
         : room.timer.studyMinutes * 60;
-      room.timer.phase = room.timer.phase === "study" ? "break" : "study";
+      const finishedPhase = room.timer.phase;
+      if (finishedPhase === "study") {
+        room.sessionsCompleted += 1;
+        io.to(room.code).emit("session-completed", room.sessionsCompleted);
+      }
+      room.timer.phase = finishedPhase === "study" ? "break" : "study";
       io.to(room.code).emit("timer-finished", { phase: room.timer.phase });
     }
 
@@ -82,7 +89,8 @@ function createRoom(code) {
       running: false,
       endsAt: null
     },
-    task: { text: "", completed: false },
+    tasks: [],
+    sessionsCompleted: 0,
     interval: null
   };
 }
@@ -164,18 +172,39 @@ io.on("connection", socket => {
 
 
 
-  socket.on("set-task", ({ text }) => {
+  socket.on("add-task", ({ text }) => {
     const room = getRoom(socket.data.roomCode);
     if (!room) return;
     const clean = String(text || "").trim().slice(0, 120);
-    room.task = { text: clean, completed: false };
+    if (!clean || room.tasks.length >= 20) return;
+    room.tasks.push({ id: crypto.randomUUID(), text: clean, completed: false });
     broadcastState(room.code);
   });
 
-  socket.on("toggle-task", () => {
+  socket.on("toggle-task", ({ id }) => {
     const room = getRoom(socket.data.roomCode);
-    if (!room || !room.task.text) return;
-    room.task.completed = !room.task.completed;
+    if (!room) return;
+    const task = room.tasks.find(t => t.id === id);
+    if (!task) return;
+    task.completed = !task.completed;
+    broadcastState(room.code);
+  });
+
+  socket.on("delete-task", ({ id }) => {
+    const room = getRoom(socket.data.roomCode);
+    if (!room) return;
+    room.tasks = room.tasks.filter(t => t.id !== id);
+    broadcastState(room.code);
+  });
+
+  socket.on("set-status", ({ status }) => {
+    const room = getRoom(socket.data.roomCode);
+    if (!room) return;
+    const allowed = ["studying", "break", "afk"];
+    if (!allowed.includes(status)) return;
+    const user = room.users.get(socket.id);
+    if (!user) return;
+    user.status = status;
     broadcastState(room.code);
   });
 
@@ -209,7 +238,7 @@ io.on("connection", socket => {
 
 function joinRoom(socket, room, name, reply) {
   const cleanName = String(name || "Guest").trim().slice(0, 24) || "Guest";
-  room.users.set(socket.id, { id: socket.id, name: cleanName });
+  room.users.set(socket.id, { id: socket.id, name: cleanName, status: "studying" });
   socket.join(room.code);
   socket.data.roomCode = room.code;
   socket.data.name = cleanName;
