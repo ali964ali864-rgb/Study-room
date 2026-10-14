@@ -1,0 +1,192 @@
+const express = require("express");
+const http = require("http");
+const path = require("path");
+const crypto = require("crypto");
+const { Server } = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
+const PORT = process.env.PORT || 3000;
+const rooms = new Map();
+
+app.use(express.static(path.join(__dirname, "public")));
+
+function makeRoomCode() {
+  let code;
+  do {
+    code = crypto.randomBytes(3).toString("hex").toUpperCase();
+  } while (rooms.has(code));
+  return code;
+}
+
+function getRoom(code) {
+  return rooms.get(String(code || "").toUpperCase());
+}
+
+function roomState(room) {
+  return {
+    code: room.code,
+    timer: room.timer,
+    users: [...room.users.values()].map(u => ({
+      id: u.id,
+      name: u.name
+    }))
+  };
+}
+
+function broadcastState(code) {
+  const room = getRoom(code);
+  if (room) io.to(code).emit("room-state", roomState(room));
+}
+
+function stopTimer(room) {
+  if (room.interval) clearInterval(room.interval);
+  room.interval = null;
+}
+
+function startTimer(room) {
+  stopTimer(room);
+  room.timer.running = true;
+  room.timer.endsAt = Date.now() + room.timer.remaining * 1000;
+
+  room.interval = setInterval(() => {
+    const remaining = Math.max(0, Math.ceil((room.timer.endsAt - Date.now()) / 1000));
+    room.timer.remaining = remaining;
+
+    if (remaining <= 0) {
+      stopTimer(room);
+      room.timer.running = false;
+      room.timer.remaining = room.timer.phase === "study"
+        ? room.timer.breakMinutes * 60
+        : room.timer.studyMinutes * 60;
+      room.timer.phase = room.timer.phase === "study" ? "break" : "study";
+      io.to(room.code).emit("timer-finished", { phase: room.timer.phase });
+    }
+
+    io.to(room.code).emit("timer", room.timer);
+  }, 250);
+}
+
+function createRoom(code) {
+  return {
+    code,
+    users: new Map(),
+    timer: {
+      studyMinutes: 50,
+      breakMinutes: 10,
+      phase: "study",
+      remaining: 50 * 60,
+      running: false,
+      endsAt: null
+    },
+    interval: null
+  };
+}
+
+io.on("connection", socket => {
+  socket.on("create-room", ({ name }, reply) => {
+    const code = makeRoomCode();
+    const room = createRoom(code);
+    rooms.set(code, room);
+    joinRoom(socket, room, name, reply);
+  });
+
+  socket.on("join-room", ({ code, name }, reply) => {
+    const room = getRoom(code);
+    if (!room) return reply?.({ ok: false, error: "Room not found." });
+    joinRoom(socket, room, name, reply);
+  });
+
+  socket.on("send-message", ({ text }) => {
+    const code = socket.data.roomCode;
+    const room = getRoom(code);
+    if (!room || !socket.data.name) return;
+    const clean = String(text || "").trim().slice(0, 500);
+    if (!clean) return;
+    io.to(code).emit("message", {
+      id: crypto.randomUUID(),
+      name: socket.data.name,
+      text: clean,
+      time: Date.now()
+    });
+  });
+
+  socket.on("timer-action", ({ action }) => {
+    const room = getRoom(socket.data.roomCode);
+    if (!room) return;
+
+    if (action === "start") {
+      if (!room.timer.running) startTimer(room);
+    } else if (action === "pause") {
+      if (room.timer.running) {
+        room.timer.remaining = Math.max(0, Math.ceil((room.timer.endsAt - Date.now()) / 1000));
+        stopTimer(room);
+        room.timer.running = false;
+        room.timer.endsAt = null;
+      }
+    } else if (action === "reset") {
+      stopTimer(room);
+      room.timer.running = false;
+      room.timer.endsAt = null;
+      room.timer.phase = "study";
+      room.timer.remaining = room.timer.studyMinutes * 60;
+    } else if (action === "skip") {
+      stopTimer(room);
+      room.timer.running = false;
+      room.timer.endsAt = null;
+      room.timer.phase = room.timer.phase === "study" ? "break" : "study";
+      room.timer.remaining =
+        (room.timer.phase === "study" ? room.timer.studyMinutes : room.timer.breakMinutes) * 60;
+    }
+
+    broadcastState(room.code);
+    io.to(room.code).emit("timer", room.timer);
+  });
+
+  socket.on("set-settings", ({ studyMinutes, breakMinutes }) => {
+    const room = getRoom(socket.data.roomCode);
+    if (!room || room.timer.running) return;
+
+    const study = Math.min(180, Math.max(1, Number(studyMinutes) || 50));
+    const brk = Math.min(60, Math.max(1, Number(breakMinutes) || 10));
+
+    room.timer.studyMinutes = study;
+    room.timer.breakMinutes = brk;
+    room.timer.phase = "study";
+    room.timer.remaining = study * 60;
+    broadcastState(room.code);
+    io.to(room.code).emit("timer", room.timer);
+  });
+
+  socket.on("disconnect", () => {
+    const code = socket.data.roomCode;
+    const room = getRoom(code);
+    if (!room) return;
+    room.users.delete(socket.id);
+    broadcastState(code);
+    if (room.users.size === 0) {
+      stopTimer(room);
+      rooms.delete(code);
+    }
+  });
+});
+
+function joinRoom(socket, room, name, reply) {
+  const cleanName = String(name || "Guest").trim().slice(0, 24) || "Guest";
+  room.users.set(socket.id, { id: socket.id, name: cleanName });
+  socket.join(room.code);
+  socket.data.roomCode = room.code;
+  socket.data.name = cleanName;
+  reply?.({ ok: true, state: roomState(room) });
+  broadcastState(room.code);
+}
+
+app.get("*splat", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+server.listen(PORT, () => {
+  console.log(`Study Room running at http://localhost:${PORT}`);
+});

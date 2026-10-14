@@ -1,0 +1,14 @@
+{
+  "name": "study-room",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Private real-time study rooms with synchronized Pomodoro timer and chat.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
+  }
+}
