@@ -1240,3 +1240,13 @@ ambienceButtons.forEach(button => {
     button.dataset.sound === savedAmbience
   );
 });
+/* =========================
+   BACKGROUND SETTINGS
+   ========================= */
+
+const backgroundDialog = $("backgroundDialog");
+const backgroundBtn = $("backgroundBtn");
+
+backgroundBtn.onclick = () => {
+  backgroundDialog.showModal();
+};
