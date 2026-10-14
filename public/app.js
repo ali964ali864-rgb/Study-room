@@ -1265,23 +1265,23 @@ const resetBackground =
 
 const backgroundStyles = {
   default: {
-    image: "",
-    color: ""
+    type: "color",
+    value: ""
   },
 
   night: {
-    image: "radial-gradient(circle at 20% 20%, #20263d 0%, #0b0d12 55%, #050608 100%)",
-    color: "#0b0d12"
+    type: "gradient",
+    value: "radial-gradient(circle at 20% 20%, #20263d 0%, #0b0d12 55%, #050608 100%)"
   },
 
   forest: {
-    image: "linear-gradient(135deg, #10251c 0%, #183b2a 45%, #07110c 100%)",
-    color: "#07110c"
+    type: "gradient",
+    value: "linear-gradient(135deg, #10251c 0%, #183b2a 45%, #07110c 100%)"
   },
 
   rain: {
-    image: "linear-gradient(135deg, #172332 0%, #26384d 50%, #0b1119 100%)",
-    color: "#0b1119"
+    type: "gradient",
+    value: "linear-gradient(135deg, #172332 0%, #26384d 50%, #0b1119 100%)"
   }
 };
 
