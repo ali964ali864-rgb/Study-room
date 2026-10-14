@@ -1247,13 +1247,6 @@ ambienceButtons.forEach(button => {
 const backgroundDialog = $("backgroundDialog");
 const backgroundBtn = $("backgroundBtn");
 
-backgroundBtn.onclick = () => {
-  backgroundDialog.showModal();
-};
-/* =========================
-   BACKGROUND FUNCTIONALITY
-   ========================= */
-
 const backgroundOptions =
   document.querySelectorAll(".background-option");
 
@@ -1285,19 +1278,21 @@ const backgroundStyles = {
   }
 };
 
+backgroundBtn.onclick = () => {
+  backgroundDialog.showModal();
+};
+
 function applyBackground(name, opacity) {
-  const bg = backgroundStyles[name] || backgroundStyles.default;
+
+  const bg =
+    backgroundStyles[name] ||
+    backgroundStyles.default;
 
   if (bg.type === "gradient") {
     document.body.style.background = bg.value;
   } else {
     document.body.style.background = "";
   }
-
-  document.body.style.setProperty(
-    "--background-opacity",
-    opacity
-  );
 
   document.querySelectorAll(
     ".card, .timer-card"
@@ -1323,3 +1318,68 @@ function applyBackground(name, opacity) {
     opacity
   );
 }
+
+backgroundOptions.forEach(option => {
+
+  option.addEventListener("click", () => {
+
+    const name =
+      option.dataset.background;
+
+    applyBackground(
+      name,
+      Number(backgroundOpacity.value)
+    );
+
+  });
+
+});
+
+backgroundOpacity.addEventListener(
+  "input",
+  () => {
+
+    const name =
+      localStorage.getItem(
+        "study-room-background"
+      ) || "default";
+
+    applyBackground(
+      name,
+      Number(backgroundOpacity.value)
+    );
+
+  }
+);
+
+resetBackground.addEventListener(
+  "click",
+  () => {
+
+    backgroundOpacity.value = "0.78";
+
+    applyBackground(
+      "default",
+      0.78
+    );
+
+  }
+);
+
+const savedBackground =
+  localStorage.getItem(
+    "study-room-background"
+  ) || "default";
+
+const savedBackgroundOpacity =
+  localStorage.getItem(
+    "study-room-background-opacity"
+  ) || "0.78";
+
+backgroundOpacity.value =
+  savedBackgroundOpacity;
+
+applyBackground(
+  savedBackground,
+  Number(savedBackgroundOpacity)
+);
