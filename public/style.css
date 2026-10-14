@@ -72,3 +72,8 @@ button,input{font:inherit} button{cursor:pointer;border:0;color:var(--text)} inp
     min-height: 0 !important;
   }
 }
+/* Android app safe-area */
+.topbar {
+  padding-top: env(safe-area-inset-top, 28px);
+  height: calc(76px + env(safe-area-inset-top, 28px));
+}
