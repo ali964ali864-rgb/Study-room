@@ -259,3 +259,25 @@ button,input{font:inherit} button{cursor:pointer;border:0;color:var(--text)} inp
   border-color: rgba(155,140,255,.5);
   background: rgba(155,140,255,.08);
 }
+/* =========================
+   BACKGROUND VIDEO
+   ========================= */
+
+.background-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  pointer-events: none;
+  display: none;
+}
+
+body.video-background .background-video {
+  display: block;
+}
+
+body.video-background {
+  background: #080a0f;
+}
