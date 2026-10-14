@@ -1076,3 +1076,167 @@ socket.on(
     );
   }
 );
+/* =========================
+   STUDY AMBIENCE
+   ========================= */
+
+let ambienceAudio = null;
+let ambienceSource = null;
+let noiseNode = null;
+let noiseGain = null;
+
+const ambienceVolume = $("ambienceVolume");
+const ambienceButtons = document.querySelectorAll(".ambience-btn");
+
+const ambienceFiles = {
+  rain: "/sounds/rain.mp3",
+  nature: "/sounds/Nature.mp3",
+  forest: "/sounds/Forest.mp3"
+};
+
+function stopAmbience() {
+  if (ambienceAudio) {
+    ambienceAudio.pause();
+    ambienceAudio.currentTime = 0;
+    ambienceAudio = null;
+  }
+
+  if (noiseNode) {
+    try {
+      noiseNode.stop();
+    } catch (_) {}
+    noiseNode.disconnect();
+    noiseNode = null;
+  }
+
+  if (noiseGain) {
+    noiseGain.disconnect();
+    noiseGain = null;
+  }
+
+  ambienceSource = null;
+}
+
+function createNoise(type) {
+  unlockAudio();
+
+  if (!audioContext) return;
+
+  const bufferSize = audioContext.sampleRate * 2;
+  const buffer = audioContext.createBuffer(
+    1,
+    bufferSize,
+    audioContext.sampleRate
+  );
+
+  const data = buffer.getChannelData(0);
+
+  if (type === "white") {
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+  }
+
+  if (type === "brown") {
+    let last = 0;
+
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      last = (last + 0.02 * white) / 1.02;
+      data[i] = last * 3.5;
+    }
+  }
+
+  noiseNode = audioContext.createBufferSource();
+  noiseNode.buffer = buffer;
+  noiseNode.loop = true;
+
+  noiseGain = audioContext.createGain();
+  noiseGain.gain.value = Number(ambienceVolume.value);
+
+  noiseNode.connect(noiseGain);
+  noiseGain.connect(audioContext.destination);
+
+  noiseNode.start();
+}
+
+function playAmbience(type) {
+  stopAmbience();
+
+  if (type === "none") return;
+
+  if (type === "white" || type === "brown") {
+    createNoise(type);
+    return;
+  }
+
+  const file = ambienceFiles[type];
+
+  if (!file) return;
+
+  ambienceAudio = new Audio(file);
+  ambienceAudio.loop = true;
+  ambienceAudio.volume = Number(ambienceVolume.value);
+
+  ambienceAudio.play().catch(() => {
+    toast("Tap the ambience button again to start the sound.");
+  });
+}
+
+ambienceButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const sound = button.dataset.sound;
+
+    unlockAudio();
+
+    ambienceButtons.forEach(btn => {
+      btn.classList.toggle(
+        "active",
+        btn.dataset.sound === sound
+      );
+    });
+
+    playAmbience(sound);
+
+    localStorage.setItem(
+      "study-room-ambience",
+      sound
+    );
+  });
+});
+
+ambienceVolume.addEventListener("input", () => {
+  const volume = Number(ambienceVolume.value);
+
+  if (ambienceAudio) {
+    ambienceAudio.volume = volume;
+  }
+
+  if (noiseGain) {
+    noiseGain.gain.value = volume;
+  }
+
+  localStorage.setItem(
+    "study-room-ambience-volume",
+    volume
+  );
+});
+
+/* Restore personal ambience settings */
+
+const savedAmbience =
+  localStorage.getItem("study-room-ambience") || "none";
+
+const savedAmbienceVolume =
+  localStorage.getItem("study-room-ambience-volume");
+
+if (savedAmbienceVolume !== null) {
+  ambienceVolume.value = savedAmbienceVolume;
+}
+
+ambienceButtons.forEach(button => {
+  button.classList.toggle(
+    "active",
+    button.dataset.sound === savedAmbience
+  );
+});
