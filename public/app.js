@@ -9,6 +9,7 @@ const timerEl = $("timer"), phaseEl = $("phase"), progressBar = $("progressBar")
 let myName = "";
 let state = null;
 let audioContext = null;
+let selectedEmoji = "";
 
 function unlockAudio() {
   try {
@@ -22,17 +23,17 @@ function playSessionEndSound() {
     unlockAudio();
     if (!audioContext) return;
     const now = audioContext.currentTime;
-    [0, 0.18, 0.36].forEach((offset, i) => {
+    [0, 0.16, 0.32].forEach((offset, i) => {
       const osc = audioContext.createOscillator();
       const gain = audioContext.createGain();
       osc.type = "sine";
-      osc.frequency.value = i === 2 ? 880 : 660;
+      osc.frequency.value = [660, 784, 988][i];
       gain.gain.setValueAtTime(0.0001, now + offset);
-      gain.gain.exponentialRampToValueAtTime(0.18, now + offset + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.16);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + offset + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.18);
       osc.connect(gain).connect(audioContext.destination);
       osc.start(now + offset);
-      osc.stop(now + offset + 0.18);
+      osc.stop(now + offset + 0.2);
     });
   } catch (_) {}
 }
@@ -63,49 +64,75 @@ function enterRoom(nextState) {
   $("roomCode").textContent = state.code;
   $("roomCodeSmall").textContent = state.code;
   renderState();
+  requestNotifications();
 }
 
 function renderState() {
   if (!state) return;
   $("peopleCount").textContent = state.users.length;
+  $("studyingCount").textContent = state.users.filter(u => u.status === "studying").length;
   $("membersList").innerHTML = state.users.map(u => `
     <div class="member">
       <div class="avatar">${escapeHtml(u.name.slice(0,1).toUpperCase())}</div>
-      <div class="member-name">${escapeHtml(u.name)}${u.name === myName ? " <small>(you)</small>" : ""}</div>
+      <div class="member-info">
+        <div class="member-name">${escapeHtml(u.name)}${u.name === myName ? " <small>(you)</small>" : ""}</div>
+        <div class="member-status">${statusIcon(u.status)} ${statusLabel(u.status)}</div>
+      </div>
       <span class="online"></span>
     </div>
   `).join("");
 
   $("studyMinutes").value = state.timer.studyMinutes;
   $("breakMinutes").value = state.timer.breakMinutes;
-  renderTask();
+  renderTasks();
+  renderSessionCount();
   renderTimer(state.timer);
+  setStatusUI();
 }
 
-function renderTask() {
-  const task = state?.task || { text: "", completed: false };
-  const display = $("taskDisplay");
-  const input = $("taskInput");
-  if (!task.text) {
-    display.classList.add("hidden");
-    input.value = "";
-    return;
-  }
-  display.classList.remove("hidden");
-  $("taskText").textContent = task.text;
-  display.classList.toggle("completed", !!task.completed);
-  input.value = task.text;
+function statusIcon(status) {
+  return ({studying:"📚", break:"☕", afk:"💤"}[status] || "📚");
+}
+function statusLabel(status) {
+  return ({studying:"Studying", break:"On break", afk:"AFK"}[status] || "Studying");
+}
+
+function renderTasks() {
+  const tasks = state?.tasks || [];
+  const list = $("taskList");
+  list.innerHTML = tasks.length ? tasks.map(task => `
+    <div class="task-item ${task.completed ? "completed" : ""}" data-task-id="${escapeHtml(task.id)}">
+      <button class="task-check ${task.completed ? "checked" : ""}" aria-label="${task.completed ? "Mark task incomplete" : "Complete task"}">${task.completed ? "✓" : ""}</button>
+      <span class="task-text">${escapeHtml(task.text)}</span>
+      <button class="task-delete" aria-label="Delete task" title="Delete task">×</button>
+    </div>
+  `).join("") : `<div class="empty-tasks">No tasks yet. Add the first one 👇</div>`;
+
+  list.querySelectorAll(".task-item").forEach(item => {
+    const id = item.dataset.taskId;
+    item.querySelector(".task-check").onclick = () => socket.emit("toggle-task", {id});
+    item.querySelector(".task-delete").onclick = () => socket.emit("delete-task", {id});
+  });
+}
+
+function renderSessionCount() {
+  $("sessionCount").textContent = state?.sessionsCompleted || 0;
+}
+
+function setStatusUI() {
+  const current = state?.users.find(u => u.name === myName);
+  const status = current?.status || "studying";
+  document.querySelectorAll(".status-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.status === status));
 }
 
 function renderTimer(t) {
-  phaseEl.textContent = t.phase.toUpperCase();
-  phaseEl.style.color = t.phase === "study" ? "var(--accent)" : "#82b7ff";
+  phaseEl.textContent = t.phase === "study" ? "FOCUS SESSION" : "BREAK";
+  phaseEl.className = `phase ${t.phase}`;
   timerEl.textContent = formatTime(t.remaining);
 
   const total = (t.phase === "study" ? t.studyMinutes : t.breakMinutes) * 60;
   const elapsed = Math.max(0, total - t.remaining);
   progressBar.style.width = `${Math.min(100, (elapsed / total) * 100)}%`;
-
   $("startBtn").textContent = t.running ? "Pause" : "Start";
 }
 
@@ -117,6 +144,41 @@ function formatTime(s) {
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 }
+
+function addSystemMessage(text) {
+  const el = document.createElement("div");
+  el.className = "msg system-msg";
+  el.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+  $("messages").appendChild(el);
+  $("messages").scrollTop = $("messages").scrollHeight;
+}
+
+function toast(text) {
+  const t = $("toast");
+  t.textContent = text;
+  t.classList.add("show");
+  clearTimeout(window.__toast);
+  window.__toast = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function finishAnimation() {
+  const card = $("timerCard");
+  card.classList.remove("session-finished");
+  void card.offsetWidth;
+  card.classList.add("session-finished");
+  setTimeout(() => card.classList.remove("session-finished"), 900);
+}
+
+// Theme
+const savedTheme = localStorage.getItem("study-room-theme") || "dark";
+document.documentElement.dataset.theme = savedTheme;
+$("themeToggle").onclick = () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem("study-room-theme", next);
+  $("themeToggle").textContent = next === "dark" ? "☀" : "☾";
+};
+$("themeToggle").textContent = savedTheme === "dark" ? "☀" : "☾";
 
 $("createBtn").onclick = () => {
   myName = nameInput.value.trim() || "Guest";
@@ -155,18 +217,17 @@ $("skipBtn").onclick = () => {
   socket.emit("timer-action", {action: "skip"});
 };
 
-$("saveTask").onclick = () => {
-  socket.emit("set-task", { text: $("taskInput").value });
+$("addTaskBtn").onclick = () => {
+  const input = $("taskInput");
+  const text = input.value.trim();
+  if (!text) return input.focus();
+  socket.emit("add-task", {text});
+  input.value = "";
+  input.focus();
 };
-
 $("taskInput").addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    $("saveTask").click();
-  }
+  if (e.key === "Enter") { e.preventDefault(); $("addTaskBtn").click(); }
 });
-
-$("taskCheck").onclick = () => socket.emit("toggle-task");
 
 $("leaveBtn").onclick = () => {
   if (!confirm("Leave this room?")) return;
@@ -176,7 +237,6 @@ $("leaveBtn").onclick = () => {
   lobby.classList.remove("hidden");
   $("roomBadge").classList.add("hidden");
   $("messages").innerHTML = "";
-  $("taskInput").value = "";
   showError("");
   toast("You left the room");
 };
@@ -184,17 +244,36 @@ $("leaveBtn").onclick = () => {
 $("settingsBtn").onclick = () => $("settingsDialog").showModal();
 $("saveSettings").onclick = e => {
   e.preventDefault();
-  socket.emit("set-settings", {
-    studyMinutes: $("studyMinutes").value,
-    breakMinutes: $("breakMinutes").value
-  });
+  socket.emit("set-settings", {studyMinutes: $("studyMinutes").value, breakMinutes: $("breakMinutes").value});
   $("settingsDialog").close();
 };
 
 $("copyRoom").onclick = async () => {
-  await navigator.clipboard.writeText(state.code);
-  toast("Room code copied");
+  try { await navigator.clipboard.writeText(state.code); toast("Room code copied"); }
+  catch (_) { toast(`Room code: ${state.code}`); }
 };
+
+// Status buttons
+$("statusPicker").addEventListener("click", e => {
+  const btn = e.target.closest(".status-btn");
+  if (!btn) return;
+  socket.emit("set-status", {status: btn.dataset.status});
+});
+
+// Emoji picker
+$("emojiToggle").onclick = () => $("emojiPicker").classList.toggle("hidden");
+$("emojiPicker").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-emoji]");
+  if (!btn) return;
+  selectedEmoji = btn.dataset.emoji;
+  $("messageInput").value += selectedEmoji;
+  $("messageInput").focus();
+  $("emojiPicker").classList.add("hidden");
+});
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".emoji-wrap")) $("emojiPicker").classList.add("hidden");
+});
 
 $("chatForm").onsubmit = e => {
   e.preventDefault();
@@ -227,20 +306,13 @@ socket.on("message", msg => {
 socket.on("timer-finished", ({phase}) => {
   playSessionEndSound();
   sendSessionNotification(phase);
-  toast(phase === "break" ? "Study session finished — break time 🌿" : "Break's over — back to work.");
+  finishAnimation();
+  toast(phase === "break" ? "Focus session finished — break time 🌿" : "Break's over — back to work.");
 });
 
-function addSystemMessage(text) {
-  const el = document.createElement("div");
-  el.className = "msg";
-  el.innerHTML = `<div class="meta">Study Room</div><div class="bubble">${escapeHtml(text)}</div>`;
-  $("messages").appendChild(el);
-}
-
-function toast(text) {
-  const t = $("toast");
-  t.textContent = text;
-  t.classList.add("show");
-  clearTimeout(window.__toast);
-  window.__toast = setTimeout(() => t.classList.remove("show"), 2200);
-}
+socket.on("session-completed", count => {
+  if (!state) return;
+  state.sessionsCompleted = count;
+  renderSessionCount();
+  toast(`🔥 Session ${count} complete!`);
+});
