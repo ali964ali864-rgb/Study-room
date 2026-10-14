@@ -213,11 +213,19 @@ function showError(msg) {
 
 function enterRoom(nextState) {
   state = nextState;
-  document.body.dataset.roomType=state.type||"normal";
-  console.log("Room type:", state.type);
+
+  document.body.dataset.roomType =
+    state.type || "normal";
 
   lobby.classList.add("hidden");
-  room.classList.remove("hidden");
+
+  if (state.type === "2d") {
+    room.classList.add("hidden");
+    $("characterSelect").classList.remove("hidden");
+  } else {
+    $("characterSelect").classList.add("hidden");
+    room.classList.remove("hidden");
+  }
 
   $("roomBadge").classList.remove("hidden");
 
@@ -230,6 +238,58 @@ function enterRoom(nextState) {
 
   requestNotifications();
 }
+
+/* =========================================================
+   2D CHARACTER SELECTION
+   ========================================================= */
+
+let selectedCharacter = "male1";
+
+document
+  .querySelectorAll(".character-option")
+  .forEach(option => {
+
+    option.addEventListener("click", () => {
+
+      selectedCharacter =
+        option.dataset.character;
+
+      document
+        .querySelectorAll(".character-option")
+        .forEach(btn =>
+          btn.classList.toggle(
+            "active",
+            btn === option
+          )
+        );
+
+    });
+
+  });
+
+$("enter2dRoomBtn").onclick = () => {
+
+  $("characterSelect").classList.add("hidden");
+  room.classList.remove("hidden");
+
+  console.log(
+    "Selected character:",
+    selectedCharacter
+  );
+};
+
+$("backFromCharacterBtn").onclick = () => {
+
+  socket.emit("leave-room");
+
+  state = null;
+
+  $("characterSelect").classList.add("hidden");
+  room.classList.add("hidden");
+  lobby.classList.remove("hidden");
+
+  $("roomBadge").classList.add("hidden");
+};
 
 function renderState() {
   if (!state) return;
