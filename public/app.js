@@ -1307,24 +1307,53 @@ function applyBackground(name, opacity) {
     backgroundStyles[name] ||
     backgroundStyles.default;
 
-  if (bg.type === "gradient") {
-    document.body.style.background = bg.value;
-  } else {
-    document.body.style.background = "";
+  const video =
+    $("backgroundVideo");
+
+  // Stop any currently playing background video
+  if (video) {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
   }
 
+  // Reset normal background
+  document.body.style.background = "";
+
+  if (bg.type === "gradient") {
+
+    document.body.style.background =
+      bg.value;
+
+  } else if (bg.type === "video") {
+
+    if (video) {
+      video.src = bg.value;
+      video.load();
+
+      video.play().catch(() => {});
+    }
+
+  }
+
+  // Card transparency
   document.querySelectorAll(
     ".card, .timer-card"
   ).forEach(el => {
+
     el.style.background =
       `rgba(15, 18, 25, ${opacity})`;
+
   });
 
+  // Highlight selected option
   backgroundOptions.forEach(option => {
+
     option.classList.toggle(
       "active",
       option.dataset.background === name
     );
+
   });
 
   localStorage.setItem(
