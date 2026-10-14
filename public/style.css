@@ -349,3 +349,10 @@ body.video-background {
   font-size: 11px;
   color: var(--muted);
 }
+/* =========================
+   ROOM TYPE
+   ========================= */
+
+body[data-room-type="2d"] .room {
+  /* 2D room will go here */
+}
