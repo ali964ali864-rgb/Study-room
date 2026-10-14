@@ -172,13 +172,15 @@ io.on("connection", socket => {
 
 
 
-  socket.on("add-task", ({ text }) => {
+  socket.on("add-task", ({ text }, reply) => {
     const room = getRoom(socket.data.roomCode);
     if (!room) return;
     const clean = String(text || "").trim().slice(0, 120);
-    if (!clean || room.tasks.length >= 20) return;
+    if (!clean) return reply?.({ ok: false, error: "Task is empty." });
+    if (room.tasks.length >= 20) return reply?.({ ok: false, error: "Room task limit reached." });
     room.tasks.push({ id: crypto.randomUUID(), text: clean, completed: false });
     broadcastState(room.code);
+    reply?.({ ok: true });
   });
 
   socket.on("toggle-task", ({ id }) => {
