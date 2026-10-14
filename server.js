@@ -77,9 +77,10 @@ function startTimer(room) {
   }, 250);
 }
 
-function createRoom(code) {
+function createRoom(code, type="normal") {
   return {
     code,
+    type,
     users: new Map(),
     timer: {
       studyMinutes: 50,
