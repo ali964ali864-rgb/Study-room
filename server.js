@@ -32,7 +32,8 @@ function roomState(room) {
     users: [...room.users.values()].map(u => ({
       id: u.id,
       name: u.name
-    }))
+    })),
+    task: room.task
   };
 }
 
@@ -81,6 +82,7 @@ function createRoom(code) {
       running: false,
       endsAt: null
     },
+    task: { text: "", completed: false },
     interval: null
   };
 }
@@ -158,6 +160,38 @@ io.on("connection", socket => {
     room.timer.remaining = study * 60;
     broadcastState(room.code);
     io.to(room.code).emit("timer", room.timer);
+  });
+
+
+
+  socket.on("set-task", ({ text }) => {
+    const room = getRoom(socket.data.roomCode);
+    if (!room) return;
+    const clean = String(text || "").trim().slice(0, 120);
+    room.task = { text: clean, completed: false };
+    broadcastState(room.code);
+  });
+
+  socket.on("toggle-task", () => {
+    const room = getRoom(socket.data.roomCode);
+    if (!room || !room.task.text) return;
+    room.task.completed = !room.task.completed;
+    broadcastState(room.code);
+  });
+
+  socket.on("leave-room", () => {
+    const code = socket.data.roomCode;
+    const room = getRoom(code);
+    if (!room) return;
+    room.users.delete(socket.id);
+    socket.leave(code);
+    socket.data.roomCode = null;
+    socket.data.name = null;
+    broadcastState(code);
+    if (room.users.size === 0) {
+      stopTimer(room);
+      rooms.delete(code);
+    }
   });
 
   socket.on("disconnect", () => {
