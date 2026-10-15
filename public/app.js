@@ -1660,7 +1660,7 @@ function drawStudyWorld() {
     W - 315,
     1,
     140,
-    185
+    160
   );
 
   // Right bookshelf 2
@@ -1673,7 +1673,7 @@ function drawStudyWorld() {
     W - 165,
     1,
     140,
-    185
+    160
   );
 
   // =========================
