@@ -1653,7 +1653,7 @@ function drawStudyWorld() {
   // Right bookshelf 1
   ctx.drawImage(
     libraryTileset,
-    28,
+    148,
     384,
     92,
     120,
