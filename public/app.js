@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io(); 
 
 const $ = id => document.getElementById(id);
 const lobby = $("lobby"), room = $("room");
