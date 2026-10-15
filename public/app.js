@@ -1594,436 +1594,287 @@ if (studyWorld) {
   }
 
 function drawStudyWorld() {
-  const W = 1200;
-  const H = 800;
-
   ctx.clearRect(0, 0, studyWorld.width, studyWorld.height);
 
-  if (!libraryTileset.complete) return;
+  const W = studyWorld.width;
+  const H = studyWorld.height;
 
   ctx.imageSmoothingEnabled = false;
 
-  const scaleX = studyWorld.width / W;
-  const scaleY = studyWorld.height / H;
+  // ---------------------------------
+  // Helpers
+  // ---------------------------------
 
-  ctx.save();
-  ctx.scale(scaleX, scaleY);
+  function drawSprite(sx, sy, sw, sh, x, y, w, h, flipY = false) {
+    ctx.save();
 
-  // =========================
-  // FLOOR
-  // =========================
-
-  const floor = {
-    x: 24,
-    y: 216,
-    w: 48,
-    h: 48
-  };
-
-  for (let y = 0; y < H; y += 48) {
-    for (let x = 0; x < W; x += 48) {
+    if (flipY) {
+      ctx.translate(x + w / 2, y + h / 2);
+      ctx.scale(1, -1);
       ctx.drawImage(
         libraryTileset,
-        floor.x,
-        floor.y,
-        floor.w,
-        floor.h,
-        x,
-        y,
-        48,
-        48
+        sx, sy, sw, sh,
+        -w / 2, -h / 2, w, h
+      );
+    } else {
+      ctx.drawImage(
+        libraryTileset,
+        sx, sy, sw, sh,
+        x, y, w, h
+      );
+    }
+
+    ctx.restore();
+  }
+
+  // ---------------------------------
+  // FLOOR
+  // ---------------------------------
+
+  ctx.fillStyle = "#8d5b43";
+  ctx.fillRect(0, 0, W, H);
+
+  // Repeated floor tile
+  const floorTile = 52;
+
+  for (let y = 0; y < H; y += floorTile) {
+    for (let x = 0; x < W; x += floorTile) {
+      ctx.drawImage(
+        libraryTileset,
+        23, 215, 52, 50,
+        x, y, floorTile, floorTile
       );
     }
   }
 
-  // =========================
-  // FULL BACK WALL
-  // =========================
+  // ---------------------------------
+  // BACK WALL / WINDOWS
+  // ---------------------------------
 
-  // Keep the original proportions of the wall asset.
+  // Dark wall area
+  ctx.fillStyle = "#3a2926";
+  ctx.fillRect(0, 0, W, H * 0.25);
+
+  /*
+    Large wall/window section from the tileset.
+    It spans almost the entire width so there
+    isn't that stupid floating-wall look.
+  */
   ctx.drawImage(
     libraryTileset,
-    936,
-    0,
-    536,
-    165,
-    0,
-    0,
-    1200,
-    369
+    934, 0, 602, 195,
+    0, 0, W, H * 0.27
   );
 
-  // =========================
-  // BOOKSHELVES
-  // =========================
+  // ---------------------------------
+  // STAIRS — TOP LEFT
+  // ---------------------------------
 
-  const shelf = {
-    sx: 148,
-    sy: 384,
-    sw: 88,
-    sh: 120
-  };
-
-  const shelfPositions = [
-    [35, 205],
-    [155, 205],
-    [275, 205],
-
-    [825, 205],
-    [945, 205],
-    [1065, 205],
-
-    [35, 535],
-    [1065, 535]
-  ];
-
-  shelfPositions.forEach(([x, y]) => {
-    ctx.drawImage(
-      libraryTileset,
-      shelf.sx,
-      shelf.sy,
-      shelf.sw,
-      shelf.sh,
-      x,
-      y,
-      100,
-      136
-    );
-  });
-
-  // =========================
-  // GIANT CLOCK
-  // =========================
-
-  ctx.drawImage(
-    libraryTileset,
-    78,
-    24,
-    65,
-    128,
-    568,
-    115,
-    75,
-    145
+  drawSprite(
+    770, 25, 75, 155,
+    W * 0.025,
+    H * 0.055,
+    W * 0.075,
+    H * 0.20
   );
 
-  // =========================
-  // CENTRAL RUG
-  // =========================
+  // ---------------------------------
+  // GIANT CLOCK — TOP CENTER
+  // ---------------------------------
 
-  ctx.drawImage(
-    libraryTileset,
-    456,
-    24,
-    168,
-    72,
-    390,
-    255,
-    420,
-    180
+  drawSprite(
+    78, 23, 72, 125,
+    W * 0.445,
+    H * 0.035,
+    W * 0.105,
+    H * 0.19
   );
 
-  // =========================
+  // ---------------------------------
+  // UPPER BOOKSHELVES
+  // ---------------------------------
+
+  const shelfW = W * 0.105;
+  const shelfH = H * 0.20;
+
+  // Left side
+  drawSprite(28, 384, 92, 120,
+    W * 0.10, H * 0.30, shelfW, shelfH);
+
+  drawSprite(150, 384, 92, 120,
+    W * 0.22, H * 0.30, shelfW, shelfH);
+
+  // Right side
+  drawSprite(269, 383, 92, 121,
+    W * 0.68, H * 0.30, shelfW, shelfH);
+
+  drawSprite(388, 383, 92, 121,
+    W * 0.80, H * 0.30, shelfW, shelfH);
+
+  // ---------------------------------
+  // SIDE TABLE — LEFT
+  // ---------------------------------
+
+  drawSprite(
+    560, 230, 195, 108,
+    W * 0.08,
+    H * 0.49,
+    W * 0.20,
+    H * 0.16
+  );
+
+  // One chair ABOVE left side table
+  drawSprite(
+    670, 24, 72, 72,
+    W * 0.145,
+    H * 0.40,
+    W * 0.075,
+    H * 0.105
+  );
+
+  // Left mat
+  drawSprite(
+    466, 24, 160, 70,
+    W * 0.105,
+    H * 0.66,
+    W * 0.18,
+    H * 0.09
+  );
+
+  // ---------------------------------
   // MAIN TABLE
-  // =========================
+  // ---------------------------------
 
-  ctx.drawImage(
-    libraryTileset,
-    360,
-    216,
-    168,
-    96,
-    440,
-    315,
-    320,
-    185
+  drawSprite(
+    375, 216, 168, 100,
+    W * 0.365,
+    H * 0.48,
+    W * 0.27,
+    H * 0.17
   );
 
-  // =========================
-  // BOOKS / OBJECTS ON TABLE
-  // =========================
+  // ---------------------------------
+  // FOUR MAIN TABLE CHAIRS
+  // ---------------------------------
 
-  // Book pile
-  ctx.drawImage(
-    libraryTileset,
-    230,
-    28,
-    42,
-    45,
-    480,
-    335,
-    55,
-    55
+  const chairW = W * 0.075;
+  const chairH = H * 0.105;
+
+  // TOP LEFT — faces DOWN toward table
+  drawSprite(
+    670, 24, 72, 72,
+    W * 0.39,
+    H * 0.39,
+    chairW,
+    chairH
   );
 
-  // Open book
-  ctx.drawImage(
-    libraryTileset,
-    290,
-    28,
-    45,
-    38,
-    650,
-    350,
-    55,
-    48
+  // TOP RIGHT — faces DOWN toward table
+  drawSprite(
+    670, 24, 72, 72,
+    W * 0.53,
+    H * 0.39,
+    chairW,
+    chairH
   );
 
-  // Stationery/books
-  ctx.drawImage(
-    libraryTileset,
-    300,
-    85,
-    45,
-    50,
-    720,
-    335,
-    55,
-    60
+  // BOTTOM LEFT — flipped vertically, faces UP
+  drawSprite(
+    670, 24, 72, 72,
+    W * 0.39,
+    H * 0.665,
+    chairW,
+    chairH,
+    true
   );
 
-  // =========================
-  // MAIN TABLE CHAIRS
-  // =========================
-
-  // LEFT
-  ctx.drawImage(
-    libraryTileset,
-    672,
-    39,
-    48,
-    57,
-    470,
-    260,
-    70,
-    82
+  // BOTTOM RIGHT — flipped vertically, faces UP
+  drawSprite(
+    670, 24, 72, 72,
+    W * 0.53,
+    H * 0.665,
+    chairW,
+    chairH,
+    true
   );
 
-  // RIGHT
-  ctx.drawImage(
-    libraryTileset,
-    672,
-    39,
-    48,
-    57,
-    660,
-    260,
-    70,
-    82
+  // ---------------------------------
+  // SIDE TABLE — RIGHT
+  // ---------------------------------
+
+  drawSprite(
+    560, 230, 195, 108,
+    W * 0.72,
+    H * 0.49,
+    W * 0.20,
+    H * 0.16
   );
 
-  // BOTTOM LEFT
-  ctx.drawImage(
-    libraryTileset,
-    672,
-    100,
-    48,
-    68,
-    470,
-    495,
-    70,
-    92
+  // One chair ABOVE right side table
+  drawSprite(
+    670, 24, 72, 72,
+    W * 0.785,
+    H * 0.40,
+    W * 0.075,
+    H * 0.105
   );
 
-  // BOTTOM RIGHT
-  ctx.drawImage(
-    libraryTileset,
-    672,
-    100,
-    48,
-    68,
-    660,
-    495,
-    70,
-    92
+  // Right mat
+  drawSprite(
+    466, 24, 160, 70,
+    W * 0.715,
+    H * 0.66,
+    W * 0.18,
+    H * 0.09
   );
 
-  // =========================
-  // LEFT READING AREA
-  // =========================
+  // ---------------------------------
+  // GLOBE — LOWER CENTER
+  // ---------------------------------
 
-  ctx.drawImage(
-    libraryTileset,
-    544,
-    229,
-    190,
-    110,
-    115,
-    365,
-    230,
-    135
+  drawSprite(
+    145, 228, 105, 125,
+    W * 0.455,
+    H * 0.76,
+    W * 0.10,
+    H * 0.17
   );
 
-  // chairs
-  ctx.drawImage(
-    libraryTileset,
-    672,
-    100,
-    48,
-    68,
-    145,
-    485,
-    65,
-    90
-  );
+  // ---------------------------------
+  // LOWER BOOKSHELVES
+  // ---------------------------------
 
-  ctx.drawImage(
-    libraryTileset,
-    672,
-    39,
-    48,
-    57,
-    250,
-    405,
-    65,
-    80
-  );
+  drawSprite(28, 384, 92, 120,
+    W * 0.08, H * 0.78, shelfW, shelfH);
 
-  // =========================
-  // RIGHT READING AREA
-  // =========================
+  drawSprite(150, 384, 92, 120,
+    W * 0.20, H * 0.78, shelfW, shelfH);
 
-  ctx.drawImage(
-    libraryTileset,
-    544,
-    229,
-    190,
-    110,
-    855,
-    365,
-    230,
-    135
-  );
+  drawSprite(269, 383, 92, 121,
+    W * 0.72, H * 0.78, shelfW, shelfH);
 
-  ctx.drawImage(
-    libraryTileset,
-    672,
-    39,
-    48,
-    57,
-    875,
-    405,
-    65,
-    80
-  );
+  drawSprite(388, 383, 92, 121,
+    W * 0.84, H * 0.78, shelfW, shelfH);
 
-  ctx.drawImage(
-    libraryTileset,
-    672,
-    100,
-    48,
-    68,
-    970,
-    485,
-    65,
-    90
-  );
-
-  // =========================
-  // RUGS
-  // =========================
-
-  ctx.drawImage(
-    libraryTileset,
-    464,
-    128,
-    128,
-    56,
-    125,
-    535,
-    220,
-    95
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    464,
-    128,
-    128,
-    56,
-    855,
-    535,
-    220,
-    95
-  );
-
-  // =========================
-  // GLOBE
-  // =========================
-
-  ctx.drawImage(
-    libraryTileset,
-    144,
-    230,
-    96,
-    100,
-    550,
-    590,
-    100,
-    105
-  );
-
-  // =========================
-  // PLANTS
-  // =========================
-
-  ctx.drawImage(
-    libraryTileset,
-    20,
-    25,
-    45,
-    95,
-    15,
-    330,
-    55,
-    110
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    20,
-    25,
-    45,
-    95,
-    1130,
-    330,
-    55,
-    110
-  );
-
-  // =========================
+  // ---------------------------------
   // DECORATIVE BOOK PILES
-  // =========================
+  // ---------------------------------
 
-  ctx.drawImage(
-    libraryTileset,
-    240,
-    27,
-    31,
-    45,
-    350,
-    565,
-    45,
-    65
+  drawSprite(
+    170, 150, 55, 45,
+    W * 0.31,
+    H * 0.71,
+    W * 0.06,
+    H * 0.06
   );
 
-  ctx.drawImage(
-    libraryTileset,
-    240,
-    27,
-    31,
-    45,
-    805,
-    565,
-    45,
-    65
+  drawSprite(
+    170, 150, 55, 45,
+    W * 0.62,
+    H * 0.71,
+    W * 0.06,
+    H * 0.06
   );
-
-  // =========================
-  // RESTORE
-  // =========================
-
-  ctx.restore();
 }
   libraryTileset.onload = () => {
     resizeStudyWorld();
