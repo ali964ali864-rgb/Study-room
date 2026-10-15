@@ -1691,7 +1691,37 @@ function drawStudyWorld() {
     100,
     175
   );
+// =========================
+  // MAIN STUDY RUG
+  // =========================
 
+  ctx.drawImage(
+    libraryTileset,
+    456,
+    24,
+    168,
+    72,
+    W / 2 - 230,
+    300,
+    460,
+    190
+  );
+
+  // =========================
+  // MAIN STUDY TABLE
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    360,
+    216,
+    168,
+    96,
+    W / 2 - 170,
+    330,
+    340,
+    170
+  );
   
 }
   libraryTileset.onload = () => {
