@@ -1594,286 +1594,56 @@ if (studyWorld) {
   }
 
 function drawStudyWorld() {
-  ctx.clearRect(0, 0, studyWorld.width, studyWorld.height);
+  if (!libraryTileset.complete) return;
+
+  ctx.clearRect(
+    0,
+    0,
+    studyWorld.width,
+    studyWorld.height
+  );
+
+  ctx.imageSmoothingEnabled = false;
 
   const W = studyWorld.width;
   const H = studyWorld.height;
 
-  ctx.imageSmoothingEnabled = false;
-
-  // ---------------------------------
-  // Helpers
-  // ---------------------------------
-
-  function drawSprite(sx, sy, sw, sh, x, y, w, h, flipY = false) {
-    ctx.save();
-
-    if (flipY) {
-      ctx.translate(x + w / 2, y + h / 2);
-      ctx.scale(1, -1);
-      ctx.drawImage(
-        libraryTileset,
-        sx, sy, sw, sh,
-        -w / 2, -h / 2, w, h
-      );
-    } else {
-      ctx.drawImage(
-        libraryTileset,
-        sx, sy, sw, sh,
-        x, y, w, h
-      );
-    }
-
-    ctx.restore();
-  }
-
-  // ---------------------------------
+  // =========================
   // FLOOR
-  // ---------------------------------
+  // =========================
 
-  ctx.fillStyle = "#8d5b43";
-  ctx.fillRect(0, 0, W, H);
+  const tileSize = 48;
 
-  // Repeated floor tile
-  const floorTile = 52;
-
-  for (let y = 0; y < H; y += floorTile) {
-    for (let x = 0; x < W; x += floorTile) {
+  for (let y = 0; y < H; y += tileSize) {
+    for (let x = 0; x < W; x += tileSize) {
       ctx.drawImage(
         libraryTileset,
-        23, 215, 52, 50,
-        x, y, floorTile, floorTile
+        24,
+        216,
+        48,
+        48,
+        x,
+        y,
+        tileSize,
+        tileSize
       );
     }
   }
 
-  // ---------------------------------
-  // BACK WALL / WINDOWS
-  // ---------------------------------
+  // =========================
+  // BACK WALL
+  // =========================
 
-  // Dark wall area
-  ctx.fillStyle = "#3a2926";
-  ctx.fillRect(0, 0, W, H * 0.25);
-
-  /*
-    Large wall/window section from the tileset.
-    It spans almost the entire width so there
-    isn't that stupid floating-wall look.
-  */
   ctx.drawImage(
     libraryTileset,
-    934, 0, 602, 195,
-    0, 0, W, H * 0.27
-  );
-
-  // ---------------------------------
-  // STAIRS — TOP LEFT
-  // ---------------------------------
-
-  drawSprite(
-    770, 25, 75, 155,
-    W * 0.025,
-    H * 0.055,
-    W * 0.075,
-    H * 0.20
-  );
-
-  // ---------------------------------
-  // GIANT CLOCK — TOP CENTER
-  // ---------------------------------
-
-  drawSprite(
-    78, 23, 72, 125,
-    W * 0.445,
-    H * 0.035,
-    W * 0.105,
-    H * 0.19
-  );
-
-  // ---------------------------------
-  // UPPER BOOKSHELVES
-  // ---------------------------------
-
-  const shelfW = W * 0.105;
-  const shelfH = H * 0.20;
-
-  // Left side
-  drawSprite(28, 384, 92, 120,
-    W * 0.10, H * 0.30, shelfW, shelfH);
-
-  drawSprite(150, 384, 92, 120,
-    W * 0.22, H * 0.30, shelfW, shelfH);
-
-  // Right side
-  drawSprite(269, 383, 92, 121,
-    W * 0.68, H * 0.30, shelfW, shelfH);
-
-  drawSprite(388, 383, 92, 121,
-    W * 0.80, H * 0.30, shelfW, shelfH);
-
-  // ---------------------------------
-  // SIDE TABLE — LEFT
-  // ---------------------------------
-
-  drawSprite(
-    560, 230, 195, 108,
-    W * 0.08,
-    H * 0.49,
-    W * 0.20,
-    H * 0.16
-  );
-
-  // One chair ABOVE left side table
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.145,
-    H * 0.40,
-    W * 0.075,
-    H * 0.105
-  );
-
-  // Left mat
-  drawSprite(
-    466, 24, 160, 70,
-    W * 0.105,
-    H * 0.66,
-    W * 0.18,
-    H * 0.09
-  );
-
-  // ---------------------------------
-  // MAIN TABLE
-  // ---------------------------------
-
-  drawSprite(
-    375, 216, 168, 100,
-    W * 0.365,
-    H * 0.48,
-    W * 0.27,
-    H * 0.17
-  );
-
-  // ---------------------------------
-  // FOUR MAIN TABLE CHAIRS
-  // ---------------------------------
-
-  const chairW = W * 0.075;
-  const chairH = H * 0.105;
-
-  // TOP LEFT — faces DOWN toward table
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.39,
-    H * 0.39,
-    chairW,
-    chairH
-  );
-
-  // TOP RIGHT — faces DOWN toward table
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.53,
-    H * 0.39,
-    chairW,
-    chairH
-  );
-
-  // BOTTOM LEFT — flipped vertically, faces UP
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.39,
-    H * 0.665,
-    chairW,
-    chairH,
-    true
-  );
-
-  // BOTTOM RIGHT — flipped vertically, faces UP
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.53,
-    H * 0.665,
-    chairW,
-    chairH,
-    true
-  );
-
-  // ---------------------------------
-  // SIDE TABLE — RIGHT
-  // ---------------------------------
-
-  drawSprite(
-    560, 230, 195, 108,
-    W * 0.72,
-    H * 0.49,
-    W * 0.20,
-    H * 0.16
-  );
-
-  // One chair ABOVE right side table
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.785,
-    H * 0.40,
-    W * 0.075,
-    H * 0.105
-  );
-
-  // Right mat
-  drawSprite(
-    466, 24, 160, 70,
-    W * 0.715,
-    H * 0.66,
-    W * 0.18,
-    H * 0.09
-  );
-
-  // ---------------------------------
-  // GLOBE — LOWER CENTER
-  // ---------------------------------
-
-  drawSprite(
-    145, 228, 105, 125,
-    W * 0.455,
-    H * 0.76,
-    W * 0.10,
-    H * 0.17
-  );
-
-  // ---------------------------------
-  // LOWER BOOKSHELVES
-  // ---------------------------------
-
-  drawSprite(28, 384, 92, 120,
-    W * 0.08, H * 0.78, shelfW, shelfH);
-
-  drawSprite(150, 384, 92, 120,
-    W * 0.20, H * 0.78, shelfW, shelfH);
-
-  drawSprite(269, 383, 92, 121,
-    W * 0.72, H * 0.78, shelfW, shelfH);
-
-  drawSprite(388, 383, 92, 121,
-    W * 0.84, H * 0.78, shelfW, shelfH);
-
-  // ---------------------------------
-  // DECORATIVE BOOK PILES
-  // ---------------------------------
-
-  drawSprite(
-    170, 150, 55, 45,
-    W * 0.31,
-    H * 0.71,
-    W * 0.06,
-    H * 0.06
-  );
-
-  drawSprite(
-    170, 150, 55, 45,
-    W * 0.62,
-    H * 0.71,
-    W * 0.06,
-    H * 0.06
+    936,
+    0,
+    536,
+    165,
+    0,
+    0,
+    W,
+    H * 0.30
   );
 }
   libraryTileset.onload = () => {
