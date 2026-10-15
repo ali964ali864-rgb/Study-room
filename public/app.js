@@ -1593,9 +1593,9 @@ if (studyWorld) {
     drawStudyWorld();
   }
 
- function drawStudyWorld() {
-  const W = 1440;
-  const H = 900;
+function drawStudyWorld() {
+  const W = 1200;
+  const H = 800;
 
   ctx.clearRect(0, 0, studyWorld.width, studyWorld.height);
 
@@ -1624,146 +1624,327 @@ if (studyWorld) {
     for (let x = 0; x < W; x += 48) {
       ctx.drawImage(
         libraryTileset,
-        floor.x, floor.y, floor.w, floor.h,
-        x, y, 48, 48
+        floor.x,
+        floor.y,
+        floor.w,
+        floor.h,
+        x,
+        y,
+        48,
+        48
       );
     }
   }
 
   // =========================
-  // BACK WALL
+  // FULL BACK WALL
   // =========================
 
-  ctx.fillStyle = "#39251f";
-  ctx.fillRect(0, 0, W, 135);
-
-  // Wooden/library wall section
+  // Keep the original proportions of the wall asset.
   ctx.drawImage(
     libraryTileset,
-    936, 0, 536, 165,
-    70, 0, 1300, 125
+    936,
+    0,
+    536,
+    165,
+    0,
+    0,
+    1200,
+    369
   );
 
   // =========================
-  // FILLED BOOKSHELVES
+  // BOOKSHELVES
   // =========================
 
   const shelf = {
-    x: 148,
-    y: 384,
-    w: 88,
-    h: 120
+    sx: 148,
+    sy: 384,
+    sw: 88,
+    sh: 120
   };
 
-  const shelves = [
-    [70, 150],
-    [230, 150],
-    [1090, 150],
-    [1250, 150],
+  const shelfPositions = [
+    [35, 205],
+    [155, 205],
+    [275, 205],
 
-    [70, 620],
-    [1250, 620]
+    [825, 205],
+    [945, 205],
+    [1065, 205],
+
+    [35, 535],
+    [1065, 535]
   ];
 
-  shelves.forEach(([x, y]) => {
+  shelfPositions.forEach(([x, y]) => {
     ctx.drawImage(
       libraryTileset,
-      shelf.x, shelf.y, shelf.w, shelf.h,
-      x, y, 110, 150
+      shelf.sx,
+      shelf.sy,
+      shelf.sw,
+      shelf.sh,
+      x,
+      y,
+      100,
+      136
     );
   });
 
   // =========================
-  // LARGE CENTRAL RUG
+  // GIANT CLOCK
   // =========================
 
   ctx.drawImage(
     libraryTileset,
-    456, 24, 168, 72,
-    490, 230, 460, 195
+    78,
+    24,
+    65,
+    128,
+    568,
+    115,
+    75,
+    145
   );
 
   // =========================
-  // MAIN STUDY TABLE
+  // CENTRAL RUG
   // =========================
 
   ctx.drawImage(
     libraryTileset,
-    360, 216, 168, 96,
-    510, 275, 420, 240
+    456,
+    24,
+    168,
+    72,
+    390,
+    255,
+    420,
+    180
   );
 
   // =========================
-  // CHAIRS
-  // =========================
-
-  const chair = {
-    x: 672,
-    y: 39,
-    w: 48,
-    h: 57
-  };
-
-  // Top side
-  ctx.drawImage(
-    libraryTileset,
-    chair.x, chair.y, chair.w, chair.h,
-    555, 220, 75, 90
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    chair.x, chair.y, chair.w, chair.h,
-    810, 220, 75, 90
-  );
-
-  // Bottom side
-  ctx.drawImage(
-    libraryTileset,
-    chair.x, chair.y, chair.w, chair.h,
-    555, 495, 75, 90
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    chair.x, chair.y, chair.w, chair.h,
-    810, 495, 75, 90
-  );
-
-  // =========================
-  // LEFT READING TABLE
+  // MAIN TABLE
   // =========================
 
   ctx.drawImage(
     libraryTileset,
-    544, 229, 190, 110,
-    180, 360, 270, 155
+    360,
+    216,
+    168,
+    96,
+    440,
+    315,
+    320,
+    185
   );
 
   // =========================
-  // RIGHT READING TABLE
+  // BOOKS / OBJECTS ON TABLE
+  // =========================
+
+  // Book pile
+  ctx.drawImage(
+    libraryTileset,
+    230,
+    28,
+    42,
+    45,
+    480,
+    335,
+    55,
+    55
+  );
+
+  // Open book
+  ctx.drawImage(
+    libraryTileset,
+    290,
+    28,
+    45,
+    38,
+    650,
+    350,
+    55,
+    48
+  );
+
+  // Stationery/books
+  ctx.drawImage(
+    libraryTileset,
+    300,
+    85,
+    45,
+    50,
+    720,
+    335,
+    55,
+    60
+  );
+
+  // =========================
+  // MAIN TABLE CHAIRS
+  // =========================
+
+  // LEFT
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    470,
+    260,
+    70,
+    82
+  );
+
+  // RIGHT
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    660,
+    260,
+    70,
+    82
+  );
+
+  // BOTTOM LEFT
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    100,
+    48,
+    68,
+    470,
+    495,
+    70,
+    92
+  );
+
+  // BOTTOM RIGHT
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    100,
+    48,
+    68,
+    660,
+    495,
+    70,
+    92
+  );
+
+  // =========================
+  // LEFT READING AREA
   // =========================
 
   ctx.drawImage(
     libraryTileset,
-    544, 229, 190, 110,
-    990, 360, 270, 155
+    544,
+    229,
+    190,
+    110,
+    115,
+    365,
+    230,
+    135
+  );
+
+  // chairs
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    100,
+    48,
+    68,
+    145,
+    485,
+    65,
+    90
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    250,
+    405,
+    65,
+    80
   );
 
   // =========================
-  // SMALL RUGS
+  // RIGHT READING AREA
   // =========================
 
   ctx.drawImage(
     libraryTileset,
-    464, 128, 128, 56,
-    190, 535, 220, 95
+    544,
+    229,
+    190,
+    110,
+    855,
+    365,
+    230,
+    135
   );
 
   ctx.drawImage(
     libraryTileset,
-    464, 128, 128, 56,
-    1030, 535, 220, 95
+    672,
+    39,
+    48,
+    57,
+    875,
+    405,
+    65,
+    80
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    100,
+    48,
+    68,
+    970,
+    485,
+    65,
+    90
+  );
+
+  // =========================
+  // RUGS
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    464,
+    128,
+    128,
+    56,
+    125,
+    535,
+    220,
+    95
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    464,
+    128,
+    128,
+    56,
+    855,
+    535,
+    220,
+    95
   );
 
   // =========================
@@ -1772,41 +1953,75 @@ if (studyWorld) {
 
   ctx.drawImage(
     libraryTileset,
-    144, 230, 96, 100,
-    675, 120, 110, 115
+    144,
+    230,
+    96,
+    100,
+    550,
+    590,
+    100,
+    105
   );
 
   // =========================
-  // DECORATIVE PLANTS
-  // =========================
-
-  ctx.drawImage(
-    libraryTileset,
-    28, 31, 16, 17,
-    35, 125, 45, 48
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    28, 31, 16, 17,
-    1360, 125, 45, 48
-  );
-
-  // =========================
-  // EXTRA BOOK PILES
+  // PLANTS
   // =========================
 
   ctx.drawImage(
     libraryTileset,
-    240, 27, 31, 45,
-    455, 590, 45, 65
+    20,
+    25,
+    45,
+    95,
+    15,
+    330,
+    55,
+    110
   );
 
   ctx.drawImage(
     libraryTileset,
-    240, 27, 31, 45,
-    945, 590, 45, 65
+    20,
+    25,
+    45,
+    95,
+    1130,
+    330,
+    55,
+    110
   );
+
+  // =========================
+  // DECORATIVE BOOK PILES
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    240,
+    27,
+    31,
+    45,
+    350,
+    565,
+    45,
+    65
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    240,
+    27,
+    31,
+    45,
+    805,
+    565,
+    45,
+    65
+  );
+
+  // =========================
+  // RESTORE
+  // =========================
 
   ctx.restore();
 }
