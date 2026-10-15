@@ -1579,11 +1579,16 @@ const studyWorld = document.getElementById("studyWorld");
 if (studyWorld) {
   const ctx = studyWorld.getContext("2d");
 
+  const libraryTileset = new Image();
+  libraryTileset.src = "/assets/library/library.png";
+
   function resizeStudyWorld() {
     const rect = studyWorld.getBoundingClientRect();
 
     studyWorld.width = rect.width;
     studyWorld.height = rect.height;
+
+    drawStudyWorld();
   }
 
   function drawStudyWorld() {
@@ -1601,16 +1606,33 @@ if (studyWorld) {
       studyWorld.width,
       studyWorld.height
     );
+
+    if (!libraryTileset.complete) return;
+
+    ctx.imageSmoothingEnabled = false;
+
+    /*
+      Temporary test:
+      Draw the entire tileset in the corner.
+      We'll replace this with individual tiles
+      once we confirm the image loads correctly.
+    */
+
+    ctx.drawImage(
+      libraryTileset,
+      20,
+      20
+    );
   }
 
-  resizeStudyWorld();
-  drawStudyWorld();
+  libraryTileset.onload = () => {
+    resizeStudyWorld();
+  };
 
   window.addEventListener(
     "resize",
-    () => {
-      resizeStudyWorld();
-      drawStudyWorld();
-    }
+    resizeStudyWorld
   );
+
+  resizeStudyWorld();
 }
