@@ -1722,6 +1722,78 @@ function drawStudyWorld() {
     340,
     170
   );
+  // =========================
+  // MAIN TABLE CHAIRS
+  // =========================
+
+  const chairW = 75;
+  const chairH = 90;
+
+  // Top-left chair — faces DOWN toward table
+  ctx.save();
+  ctx.translate(
+    W / 2 - 115 + chairW / 2,
+    265 + chairH / 2
+  );
+  ctx.rotate(Math.PI);
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    -chairW / 2,
+    -chairH / 2,
+    chairW,
+    chairH
+  );
+  ctx.restore();
+
+  // Top-right chair — faces DOWN toward table
+  ctx.save();
+  ctx.translate(
+    W / 2 + 40 + chairW / 2,
+    265 + chairH / 2
+  );
+  ctx.rotate(Math.PI);
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    -chairW / 2,
+    -chairH / 2,
+    chairW,
+    chairH
+  );
+  ctx.restore();
+
+  // Bottom-left chair — faces UP toward table
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    W / 2 - 115,
+    515,
+    chairW,
+    chairH
+  );
+
+  // Bottom-right chair — faces UP toward table
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    W / 2 + 40,
+    515,
+    chairW,
+    chairH
+  );
   
 }
   libraryTileset.onload = () => {
