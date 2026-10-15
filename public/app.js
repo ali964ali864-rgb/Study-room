@@ -1647,84 +1647,33 @@ function drawStudyWorld() {
     H * 0.30
   );
   // =========================
-  // BOOKSHELVES
+  // WALL BOOKSHELVES
   // =========================
 
-  const shelfWidth = 115;
-  const shelfHeight = 155;
-
-  // Left side
+  // Left wall bookshelf
   ctx.drawImage(
     libraryTileset,
     28,
     384,
     92,
     120,
-    120,
-    230,
-    shelfWidth,
-    shelfHeight
+    135,
+    65,
+    170,
+    220
   );
 
+  // Right wall bookshelf
   ctx.drawImage(
     libraryTileset,
     148,
     384,
     92,
     120,
-    250,
-    230,
-    shelfWidth,
-    shelfHeight
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    268,
-    384,
-    92,
-    120,
-    120,
-    420,
-    shelfWidth,
-    shelfHeight
-  );
-
-  // Right side
-  ctx.drawImage(
-    libraryTileset,
-    28,
-    384,
-    92,
-    120,
-    W - 235,
-    230,
-    shelfWidth,
-    shelfHeight
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    148,
-    384,
-    92,
-    120,
-    W - 365,
-    230,
-    shelfWidth,
-    shelfHeight
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    268,
-    384,
-    92,
-    120,
-    W - 235,
-    420,
-    shelfWidth,
-    shelfHeight
+    W - 305,
+    65,
+    170,
+    220
   );
 
   // =========================
@@ -1743,35 +1692,7 @@ function drawStudyWorld() {
     175
   );
 
-  // =========================
-  // STAIRS
-  // =========================
-
-  // Left staircase
-  ctx.drawImage(
-    libraryTileset,
-    770,
-    25,
-    75,
-    155,
-    25,
-    40,
-    90,
-    185
-  );
-
-  // Right staircase
-  ctx.drawImage(
-    libraryTileset,
-    770,
-    25,
-    75,
-    155,
-    W - 115,
-    40,
-    90,
-    185
-  );
+  
 }
   libraryTileset.onload = () => {
     resizeStudyWorld();
