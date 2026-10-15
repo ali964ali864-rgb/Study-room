@@ -1594,288 +1594,275 @@ if (studyWorld) {
   }
 
 function drawStudyWorld() {
+  if (!libraryTileset.complete) return;
+
+  const W = 1200;
+  const H = 800;
+
   ctx.clearRect(0, 0, studyWorld.width, studyWorld.height);
-
-  const W = studyWorld.width;
-  const H = studyWorld.height;
-
   ctx.imageSmoothingEnabled = false;
 
-  // ---------------------------------
-  // Helpers
-  // ---------------------------------
+  const sx = studyWorld.width / W;
+  const sy = studyWorld.height / H;
 
-  function drawSprite(sx, sy, sw, sh, x, y, w, h, flipY = false) {
-    ctx.save();
+  ctx.save();
+  ctx.scale(sx, sy);
 
-    if (flipY) {
-      ctx.translate(x + w / 2, y + h / 2);
-      ctx.scale(1, -1);
+  // =====================================================
+  // FLOOR
+  // =====================================================
+
+  for (let y = 0; y < H; y += 48) {
+    for (let x = 0; x < W; x += 48) {
       ctx.drawImage(
         libraryTileset,
-        sx, sy, sw, sh,
-        -w / 2, -h / 2, w, h
-      );
-    } else {
-      ctx.drawImage(
-        libraryTileset,
-        sx, sy, sw, sh,
-        x, y, w, h
+        24, 216, 48, 48,
+        x, y, 48, 48
       );
     }
+  }
+
+  // =====================================================
+  // BACK WALL
+  // =====================================================
+
+  ctx.drawImage(
+    libraryTileset,
+    936, 0, 536, 165,
+    0, 0, W, 250
+  );
+
+  // =====================================================
+  // HELPER
+  // =====================================================
+
+  function sprite(
+    x, y,
+    sw, sh,
+    dx, dy,
+    dw, dh,
+    rotate = 0
+  ) {
+    ctx.save();
+
+    ctx.translate(dx + dw / 2, dy + dh / 2);
+    ctx.rotate(rotate);
+
+    ctx.drawImage(
+      libraryTileset,
+      x, y, sw, sh,
+      -dw / 2,
+      -dh / 2,
+      dw,
+      dh
+    );
 
     ctx.restore();
   }
 
-  // ---------------------------------
-  // FLOOR
-  // ---------------------------------
+  // =====================================================
+  // CLOCK
+  // =====================================================
 
-  ctx.fillStyle = "#8d5b43";
-  ctx.fillRect(0, 0, W, H);
-
-  // Repeated floor tile
-  const floorTile = 52;
-
-  for (let y = 0; y < H; y += floorTile) {
-    for (let x = 0; x < W; x += floorTile) {
-      ctx.drawImage(
-        libraryTileset,
-        23, 215, 52, 50,
-        x, y, floorTile, floorTile
-      );
-    }
-  }
-
-  // ---------------------------------
-  // BACK WALL / WINDOWS
-  // ---------------------------------
-
-  // Dark wall area
-  ctx.fillStyle = "#3a2926";
-  ctx.fillRect(0, 0, W, H * 0.25);
-
-  /*
-    Large wall/window section from the tileset.
-    It spans almost the entire width so there
-    isn't that stupid floating-wall look.
-  */
-  ctx.drawImage(
-    libraryTileset,
-    934, 0, 602, 195,
-    0, 0, W, H * 0.27
+  sprite(
+    78, 24, 72, 125,
+    555, 30,
+    90, 155
   );
 
-  // ---------------------------------
-  // STAIRS — TOP LEFT
-  // ---------------------------------
+  // =====================================================
+  // LEFT STAIR + CARPET
+  // =====================================================
 
-  drawSprite(
+  sprite(
     770, 25, 75, 155,
-    W * 0.025,
-    H * 0.055,
-    W * 0.075,
-    H * 0.20
+    25, 45,
+    90, 190
   );
 
-  // ---------------------------------
-  // GIANT CLOCK — TOP CENTER
-  // ---------------------------------
-
-  drawSprite(
-    78, 23, 72, 125,
-    W * 0.445,
-    H * 0.035,
-    W * 0.105,
-    H * 0.19
+  // long carpet/path
+  sprite(
+    464, 128, 128, 56,
+    35, 245,
+    110, 430
   );
 
-  // ---------------------------------
-  // UPPER BOOKSHELVES
-  // ---------------------------------
+  // =====================================================
+  // RIGHT STAIR + CARPET
+  // =====================================================
 
-  const shelfW = W * 0.105;
-  const shelfH = H * 0.20;
-
-  // Left side
-  drawSprite(28, 384, 92, 120,
-    W * 0.10, H * 0.30, shelfW, shelfH);
-
-  drawSprite(150, 384, 92, 120,
-    W * 0.22, H * 0.30, shelfW, shelfH);
-
-  // Right side
-  drawSprite(269, 383, 92, 121,
-    W * 0.68, H * 0.30, shelfW, shelfH);
-
-  drawSprite(388, 383, 92, 121,
-    W * 0.80, H * 0.30, shelfW, shelfH);
-
-  // ---------------------------------
-  // SIDE TABLE — LEFT
-  // ---------------------------------
-
-  drawSprite(
-    560, 230, 195, 108,
-    W * 0.08,
-    H * 0.49,
-    W * 0.20,
-    H * 0.16
+  sprite(
+    770, 25, 75, 155,
+    1085, 45,
+    90, 190
   );
 
-  // One chair ABOVE left side table
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.145,
-    H * 0.40,
-    W * 0.075,
-    H * 0.105
+  sprite(
+    464, 128, 128, 56,
+    1055, 245,
+    110, 430
   );
 
-  // Left mat
-  drawSprite(
-    466, 24, 160, 70,
-    W * 0.105,
-    H * 0.66,
-    W * 0.18,
-    H * 0.09
+  // =====================================================
+  // BOOKSHELVES
+  // =====================================================
+
+  const shelf = [
+    [28, 384],
+    [148, 384],
+    [268, 384],
+    [388, 384]
+  ];
+
+  // left wall
+  sprite(28, 384, 92, 120,
+    145, 265, 125, 165);
+
+  sprite(148, 384, 92, 120,
+    275, 265, 125, 165);
+
+  sprite(268, 384, 92, 120,
+    145, 440, 125, 165);
+
+  // right wall
+  sprite(28, 384, 92, 120,
+    930, 265, 125, 165);
+
+  sprite(148, 384, 92, 120,
+    800, 265, 125, 165);
+
+  sprite(268, 384, 92, 120,
+    930, 440, 125, 165);
+
+  // =====================================================
+  // MAIN RUG
+  // =====================================================
+
+  sprite(
+    456, 24, 168, 72,
+    350, 300,
+    500, 240
   );
 
-  // ---------------------------------
+  // =====================================================
   // MAIN TABLE
-  // ---------------------------------
+  // =====================================================
 
-  drawSprite(
-    375, 216, 168, 100,
-    W * 0.365,
-    H * 0.48,
-    W * 0.27,
-    H * 0.17
+  sprite(
+    360, 216, 168, 96,
+    410, 345,
+    380, 210
   );
 
-  // ---------------------------------
-  // FOUR MAIN TABLE CHAIRS
-  // ---------------------------------
+  // =====================================================
+  // FOUR MAIN CHAIRS
+  // =====================================================
 
-  const chairW = W * 0.075;
-  const chairH = H * 0.105;
-
-  // TOP LEFT — faces DOWN toward table
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.39,
-    H * 0.39,
-    chairW,
-    chairH
+  // TOP LEFT
+  sprite(
+    672, 39, 48, 57,
+    435, 275,
+    75, 90,
+    Math.PI
   );
 
-  // TOP RIGHT — faces DOWN toward table
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.53,
-    H * 0.39,
-    chairW,
-    chairH
+  // TOP RIGHT
+  sprite(
+    672, 39, 48, 57,
+    690, 275,
+    75, 90,
+    Math.PI
   );
 
-  // BOTTOM LEFT — flipped vertically, faces UP
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.39,
-    H * 0.665,
-    chairW,
-    chairH,
-    true
+  // BOTTOM LEFT
+  sprite(
+    672, 39, 48, 57,
+    435, 535,
+    75, 90
   );
 
-  // BOTTOM RIGHT — flipped vertically, faces UP
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.53,
-    H * 0.665,
-    chairW,
-    chairH,
-    true
+  // BOTTOM RIGHT
+  sprite(
+    672, 39, 48, 57,
+    690, 535,
+    75, 90
   );
 
-  // ---------------------------------
-  // SIDE TABLE — RIGHT
-  // ---------------------------------
+  // =====================================================
+  // BOOKS ON MAIN TABLE
+  // =====================================================
 
-  drawSprite(
-    560, 230, 195, 108,
-    W * 0.72,
-    H * 0.49,
-    W * 0.20,
-    H * 0.16
+  sprite(
+    240, 27, 31, 45,
+    490, 385,
+    50, 65
   );
 
-  // One chair ABOVE right side table
-  drawSprite(
-    670, 24, 72, 72,
-    W * 0.785,
-    H * 0.40,
-    W * 0.075,
-    H * 0.105
+  sprite(
+    240, 27, 31, 45,
+    650, 420,
+    50, 65
   );
 
-  // Right mat
-  drawSprite(
-    466, 24, 160, 70,
-    W * 0.715,
-    H * 0.66,
-    W * 0.18,
-    H * 0.09
+  sprite(
+    290, 27, 45, 38,
+    565, 380,
+    65, 55
   );
 
-  // ---------------------------------
-  // GLOBE — LOWER CENTER
-  // ---------------------------------
+  // =====================================================
+  // LEFT SIDE TABLE
+  // =====================================================
 
-  drawSprite(
-    145, 228, 105, 125,
-    W * 0.455,
-    H * 0.76,
-    W * 0.10,
-    H * 0.17
+  sprite(
+    544, 229, 190, 110,
+    105, 410,
+    240, 145
   );
 
-  // ---------------------------------
-  // LOWER BOOKSHELVES
-  // ---------------------------------
-
-  drawSprite(28, 384, 92, 120,
-    W * 0.08, H * 0.78, shelfW, shelfH);
-
-  drawSprite(150, 384, 92, 120,
-    W * 0.20, H * 0.78, shelfW, shelfH);
-
-  drawSprite(269, 383, 92, 121,
-    W * 0.72, H * 0.78, shelfW, shelfH);
-
-  drawSprite(388, 383, 92, 121,
-    W * 0.84, H * 0.78, shelfW, shelfH);
-
-  // ---------------------------------
-  // DECORATIVE BOOK PILES
-  // ---------------------------------
-
-  drawSprite(
-    170, 150, 55, 45,
-    W * 0.31,
-    H * 0.71,
-    W * 0.06,
-    H * 0.06
+  // ONE chair
+  sprite(
+    672, 39, 48, 57,
+    180, 345,
+    75, 90,
+    Math.PI
   );
 
-  drawSprite(
-    170, 150, 55, 45,
-    W * 0.62,
-    H * 0.71,
-    W * 0.06,
-    H * 0.06
+  // small rug
+  sprite(
+    464, 128, 128, 56,
+    105, 565,
+    240, 90
   );
-}
+
+  // =====================================================
+  // RIGHT SIDE TABLE
+  // =====================================================
+
+  sprite(
+    544, 229, 190, 110,
+    855, 410,
+    240, 145
+  );
+
+  // ONE chair
+  sprite(
+    672, 39, 48, 57,
+    945, 345,
+    75, 90,
+    Math.PI
+  );
+
+  // small rug
+  sprite(
+    464, 128, 128, 56,
+    855, 565,
+    240, 90
+  );
+
+  // =====================================================
+  // BOOKS ON SIDE TABLES
+  // =====================================================
   libraryTileset.onload = () => {
     resizeStudyWorld();
   };
