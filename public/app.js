@@ -1701,8 +1701,8 @@ ctx.drawImage(
   0,
   12,
   528,
-  W - 18,
-  0,
+  W - 10,
+  15,
   12,
   studyWorld.height
 );
