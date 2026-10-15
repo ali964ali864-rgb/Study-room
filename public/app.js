@@ -1659,7 +1659,7 @@ function drawStudyWorld() {
     120,
     W - 315,
     1,
-    140,
+    120,
     160
   );
 
@@ -1672,7 +1672,7 @@ function drawStudyWorld() {
     120,
     W - 165,
     1,
-    140,
+    120,
     160
   );
 
