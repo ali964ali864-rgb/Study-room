@@ -1706,7 +1706,7 @@ for (let y = 0; y < studyWorld.height; y += 135) {
     135,
     borderX,
     y,
-    76,
+    20,
     135
   );
 }
