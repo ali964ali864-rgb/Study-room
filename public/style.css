@@ -773,3 +773,13 @@ body[data-room-type="2d"] .room {
   left: 62%;
   top: 83%;
 }
+/* =========================
+   2D GAME WORLD
+   ========================= */
+
+#studyWorld {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
