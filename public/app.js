@@ -1691,6 +1691,33 @@ function drawStudyWorld() {
     100,
     175
   );
+  // =========================
+  // LEFT-SIDE PATH / BORDER
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    746,
+    193,
+    68,
+    151,
+    15,
+    250,
+    85,
+    190
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    746,
+    193,
+    68,
+    151,
+    15,
+    440,
+    85,
+    190
+  );
 // =========================
   // MAIN STUDY RUG
   // =========================
