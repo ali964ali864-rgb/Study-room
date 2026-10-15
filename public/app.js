@@ -1691,21 +1691,25 @@ function drawStudyWorld() {
     100,
     175
   );
-  // =========================
-  // RIGHT WALL BORDER
-  // =========================
+ // =========================
+// RIGHT WOODEN WALL BORDER
+// =========================
 
+const borderX = W - 76;
+
+for (let y = 0; y < studyWorld.height; y += 135) {
   ctx.drawImage(
     libraryTileset,
-    1440,
-    0,
-    48,
-    160,
-    W - 48,
-    0,
-    48,
-    studyWorld.height
+    957,
+    25,
+    76,
+    135,
+    borderX,
+    y,
+    76,
+    135
   );
+}
 // =========================
   // MAIN STUDY RUG
   // =========================
