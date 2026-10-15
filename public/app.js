@@ -1585,6 +1585,8 @@ if (studyWorld) {
   function resizeStudyWorld() {
     const rect = studyWorld.getBoundingClientRect();
 
+    if (rect.width === 0 || rect.height === 0) return;
+
     studyWorld.width = rect.width;
     studyWorld.height = rect.height;
 
@@ -1611,13 +1613,6 @@ if (studyWorld) {
 
     ctx.imageSmoothingEnabled = false;
 
-    /*
-      Temporary test:
-      Draw the entire tileset in the corner.
-      We'll replace this with individual tiles
-      once we confirm the image loads correctly.
-    */
-
     ctx.drawImage(
       libraryTileset,
       20,
@@ -1633,6 +1628,16 @@ if (studyWorld) {
     "resize",
     resizeStudyWorld
   );
+
+  /*
+    Watch for the 2D room becoming visible.
+    This is important because the room starts hidden.
+  */
+  const sceneObserver = new ResizeObserver(() => {
+    resizeStudyWorld();
+  });
+
+  sceneObserver.observe(studyWorld);
 
   resizeStudyWorld();
 }
