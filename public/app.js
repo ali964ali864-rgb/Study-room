@@ -1798,7 +1798,79 @@ ctx.drawImage(
     75,
     90
   );
- 
+ // =========================
+// STEP 4 — RIGHT SIDE TABLES
+// =========================
+
+ctx.drawImage(
+  libraryTileset,
+  360,
+  216,
+  168,
+  96,
+  W - 300,
+  440,
+  170,
+  100
+);
+
+ctx.drawImage(
+  libraryTileset,
+  360,
+  216,
+  168,
+  96,
+  W - 300,
+  570,
+  170,
+  100
+);
+
+
+// =========================
+// STEP 4 — MAIN TABLE LAMP
+// =========================
+
+ctx.drawImage(
+  libraryTileset,
+  624,
+  120,
+  48,
+  72,
+  W / 2 - 24,
+  350,
+  48,
+  72
+);
+
+
+// =========================
+// STEP 4 — BOOKS ON TABLE
+// =========================
+
+ctx.drawImage(
+  libraryTileset,
+  288,
+  24,
+  48,
+  48,
+  W / 2 - 100,
+  365,
+  70,
+  55
+);
+
+ctx.drawImage(
+  libraryTileset,
+  240,
+  96,
+  48,
+  48,
+  W / 2 + 70,
+  375,
+  45,
+  45
+);
 }
   libraryTileset.onload = () => {
     resizeStudyWorld();
