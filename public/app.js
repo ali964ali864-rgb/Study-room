@@ -1707,6 +1707,36 @@ function drawStudyWorld() {
     190
   );
 
+
+  // =========================
+  // TOP TABLE CHAIRS
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    W / 2 - 115,
+    270,
+    75,
+    90
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    W / 2 + 40,
+    270,
+    75,
+    90
+  );
+
+
   // =========================
   // MAIN STUDY TABLE
   // =========================
@@ -1722,15 +1752,11 @@ function drawStudyWorld() {
     340,
     170
   );
- // =========================
-  // MAIN TABLE CHAIRS
+
+
   // =========================
-
-  const chairW = 75;
-  const chairH = 90;
-
-  // TOP CHAIRS
-  // Drawn BEFORE the table so the table naturally overlaps them.
+  // BOTTOM TABLE CHAIRS
+  // =========================
 
   ctx.drawImage(
     libraryTileset,
@@ -1739,9 +1765,9 @@ function drawStudyWorld() {
     48,
     57,
     W / 2 - 115,
-    270,
-    chairW,
-    chairH
+    500,
+    75,
+    90
   );
 
   ctx.drawImage(
@@ -1751,11 +1777,11 @@ function drawStudyWorld() {
     48,
     57,
     W / 2 + 40,
-    270,
-    chairW,
-    chairH
+    500,
+    75,
+    90
   );
-  
+ 
 }
   libraryTileset.onload = () => {
     resizeStudyWorld();
