@@ -1570,3 +1570,47 @@ applyBackground(
   savedBackground,
   Number(savedBackgroundOpacity)
 );
+/* =========================
+   2D GAME CANVAS
+   ========================= */
+
+const studyWorld = document.getElementById("studyWorld");
+
+if (studyWorld) {
+  const ctx = studyWorld.getContext("2d");
+
+  function resizeStudyWorld() {
+    const rect = studyWorld.getBoundingClientRect();
+
+    studyWorld.width = rect.width;
+    studyWorld.height = rect.height;
+  }
+
+  function drawStudyWorld() {
+    ctx.clearRect(
+      0,
+      0,
+      studyWorld.width,
+      studyWorld.height
+    );
+
+    ctx.fillStyle = "#111";
+    ctx.fillRect(
+      0,
+      0,
+      studyWorld.width,
+      studyWorld.height
+    );
+  }
+
+  resizeStudyWorld();
+  drawStudyWorld();
+
+  window.addEventListener(
+    "resize",
+    () => {
+      resizeStudyWorld();
+      drawStudyWorld();
+    }
+  );
+}
