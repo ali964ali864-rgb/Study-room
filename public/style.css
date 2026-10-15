@@ -545,133 +545,18 @@ body[data-room-type="2d"] .room {
   border-radius: 18px;
 
   background: #111;
-    );
+    
 
   box-shadow:
     0 25px 80px rgba(0,0,0,.4);
 
   image-rendering: pixelated;
 }
-
-/* Back wall */
-
-.library-back-wall {
-  position: absolute;
-  inset: 0 0 42% 0;
-
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(255,255,255,.025) 0,
-      rgba(255,255,255,.025) 2px,
-      transparent 2px,
-      transparent 42px
-    );
-
-  border-bottom: 3px solid rgba(0,0,0,.35);
-}
-
-/* Bookshelves */
-
-.bookshelf {
-  position: absolute;
-  top: 10%;
-  width: 210px;
-  height: 220px;
-
-  padding: 25px 15px;
-
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 7px;
-
-  font-size: 28px;
-  line-height: 1;
-
-  background: #38271f;
-
-  border: 8px solid #241914;
-  border-bottom-width: 14px;
-
-  box-shadow:
-    inset 0 -10px rgba(0,0,0,.2),
-    8px 10px 0 rgba(0,0,0,.25);
-}
-
-.shelf-left {
-  left: 5%;
-}
-
-.shelf-right {
-  right: 5%;
-}
-
-/* Table */
-
-.study-table {
-  position: absolute;
-  left: 50%;
-  bottom: 16%;
-  transform: translateX(-50%);
-
-  width: 46%;
-  height: 150px;
-}
-
-.table-top {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 55px;
-
-  background: #5b3927;
-
-  border: 7px solid #2b1b14;
-
-  box-shadow:
-    inset 0 -8px rgba(0,0,0,.25),
-    0 8px 0 rgba(0,0,0,.25);
-}
-
-.table-leg {
-  position: absolute;
-  top: 48px;
-  width: 35px;
-  height: 100px;
-  background: #382218;
-  border: 5px solid #21130e;
-}
-
-.table-leg.left {
-  left: 8%;
-}
-
-.table-leg.right {
-  right: 8%;
-}
-
-/* Bottom floor */
-
-.library-scene::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 42%;
-
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(255,255,255,.018) 0,
-      rgba(255,255,255,.018) 3px,
-      transparent 3px,
-      transparent 70px
-    );
-
-  pointer-events: none;
+#studyWorld {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
 }
 
 /* Controls */
@@ -713,17 +598,6 @@ body[data-room-type="2d"] .room {
 
   .library-scene {
     min-height: 440px;
-  }
-
-  .bookshelf {
-    width: 120px;
-    height: 150px;
-    font-size: 20px;
-    padding: 15px 8px;
-  }
-
-  .study-table {
-    width: 62%;
   }
 }
 /* =========================
