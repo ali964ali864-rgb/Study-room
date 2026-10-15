@@ -1646,34 +1646,34 @@ function drawStudyWorld() {
     W,
     H * 0.30
   );
-  // =========================
+ // =========================
   // WALL BOOKSHELVES
   // =========================
 
-  // Left wall bookshelf
+  // Right bookshelf 1
   ctx.drawImage(
     libraryTileset,
     28,
     384,
     92,
     120,
-    135,
-    65,
-    170,
-    220
+    W - 315,
+    70,
+    140,
+    185
   );
 
-  // Right wall bookshelf
+  // Right bookshelf 2
   ctx.drawImage(
     libraryTileset,
     148,
     384,
     92,
     120,
-    W - 305,
-    65,
-    170,
-    220
+    W - 165,
+    70,
+    140,
+    185
   );
 
   // =========================
