@@ -1593,9 +1593,9 @@ if (studyWorld) {
     drawStudyWorld();
   }
 
-  function drawStudyWorld() {
-  const W = 960;
-  const H = 540;
+ function drawStudyWorld() {
+  const W = 1440;
+  const H = 900;
 
   ctx.clearRect(0, 0, studyWorld.width, studyWorld.height);
 
@@ -1603,8 +1603,6 @@ if (studyWorld) {
 
   ctx.imageSmoothingEnabled = false;
 
-  // Draw everything in a fixed game-world size,
-  // then scale it to the actual canvas.
   const scaleX = studyWorld.width / W;
   const scaleY = studyWorld.height / H;
 
@@ -1615,11 +1613,7 @@ if (studyWorld) {
   // FLOOR
   // =========================
 
-  ctx.fillStyle = "#241b18";
-  ctx.fillRect(0, 0, W, H);
-
-  // Pixel floor tile from the asset sheet
-  const floorTile = {
+  const floor = {
     x: 24,
     y: 216,
     w: 48,
@@ -1630,80 +1624,64 @@ if (studyWorld) {
     for (let x = 0; x < W; x += 48) {
       ctx.drawImage(
         libraryTileset,
-        floorTile.x,
-        floorTile.y,
-        floorTile.w,
-        floorTile.h,
-        x,
-        y,
-        48,
-        48
+        floor.x, floor.y, floor.w, floor.h,
+        x, y, 48, 48
       );
     }
   }
 
   // =========================
-  // BACK WALL / FEATURE
+  // BACK WALL
   // =========================
 
-  ctx.fillStyle = "#17120f";
-  ctx.fillRect(0, 0, W, 115);
+  ctx.fillStyle = "#39251f";
+  ctx.fillRect(0, 0, W, 135);
 
-  // Large library wall/shelf piece
+  // Wooden/library wall section
   ctx.drawImage(
     libraryTileset,
-    936,
-    0,
-    536,
-    165,
-    120,
-    0,
-    720,
-    120
+    936, 0, 536, 165,
+    70, 0, 1300, 125
   );
 
   // =========================
-  // RUG
+  // FILLED BOOKSHELVES
   // =========================
 
-  ctx.drawImage(
-    libraryTileset,
-    456,
-    24,
-    168,
-    72,
-    330,
-    285,
-    300,
-    130
-  );
-
-  // =========================
-  // BOOKSHELVES
-  // =========================
+  const shelf = {
+    x: 148,
+    y: 384,
+    w: 88,
+    h: 120
+  };
 
   const shelves = [
-    { x: 45,  y: 125 },
-    { x: 190, y: 125 },
-    { x: 725, y: 125 },
-    { x: 870, y: 125 }
+    [70, 150],
+    [230, 150],
+    [1090, 150],
+    [1250, 150],
+
+    [70, 620],
+    [1250, 620]
   ];
 
-  shelves.forEach((shelf, i) => {
-    const spriteX = [28, 148, 268, 388][i];
-
+  shelves.forEach(([x, y]) => {
     ctx.drawImage(
       libraryTileset,
-      spriteX,
-      384,
-      88,
-      120,
-      shelf.x,
-      shelf.y,
-      105,
-      145
+      shelf.x, shelf.y, shelf.w, shelf.h,
+      x, y, 110, 150
     );
   });
+
+  // =========================
+  // LARGE CENTRAL RUG
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    456, 24, 168, 72,
+    490, 230, 460, 195
+  );
 
   // =========================
   // MAIN STUDY TABLE
@@ -1711,42 +1689,81 @@ if (studyWorld) {
 
   ctx.drawImage(
     libraryTileset,
-    360,
-    216,
-    168,
-    96,
-    365,
-    335,
-    230,
-    130
+    360, 216, 168, 96,
+    510, 275, 420, 240
   );
 
   // =========================
   // CHAIRS
   // =========================
 
+  const chair = {
+    x: 672,
+    y: 39,
+    w: 48,
+    h: 57
+  };
+
+  // Top side
   ctx.drawImage(
     libraryTileset,
-    672,
-    39,
-    48,
-    57,
-    385,
-    300,
-    65,
-    78
+    chair.x, chair.y, chair.w, chair.h,
+    555, 220, 75, 90
   );
 
   ctx.drawImage(
     libraryTileset,
-    672,
-    100,
-    48,
-    68,
-    510,
-    300,
-    65,
-    85
+    chair.x, chair.y, chair.w, chair.h,
+    810, 220, 75, 90
+  );
+
+  // Bottom side
+  ctx.drawImage(
+    libraryTileset,
+    chair.x, chair.y, chair.w, chair.h,
+    555, 495, 75, 90
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    chair.x, chair.y, chair.w, chair.h,
+    810, 495, 75, 90
+  );
+
+  // =========================
+  // LEFT READING TABLE
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    544, 229, 190, 110,
+    180, 360, 270, 155
+  );
+
+  // =========================
+  // RIGHT READING TABLE
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    544, 229, 190, 110,
+    990, 360, 270, 155
+  );
+
+  // =========================
+  // SMALL RUGS
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    464, 128, 128, 56,
+    190, 535, 220, 95
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    464, 128, 128, 56,
+    1030, 535, 220, 95
   );
 
   // =========================
@@ -1755,30 +1772,40 @@ if (studyWorld) {
 
   ctx.drawImage(
     libraryTileset,
-    144,
-    230,
-    96,
-    100,
-    435,
-    185,
-    90,
-    95
+    144, 230, 96, 100,
+    675, 120, 110, 115
   );
 
   // =========================
-  // SMALL RUG
+  // DECORATIVE PLANTS
   // =========================
 
   ctx.drawImage(
     libraryTileset,
-    464,
-    128,
-    128,
-    56,
-    416,
-    455,
-    130,
-    60
+    28, 31, 16, 17,
+    35, 125, 45, 48
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    28, 31, 16, 17,
+    1360, 125, 45, 48
+  );
+
+  // =========================
+  // EXTRA BOOK PILES
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    240, 27, 31, 45,
+    455, 590, 45, 65
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    240, 27, 31, 45,
+    945, 590, 45, 65
   );
 
   ctx.restore();
