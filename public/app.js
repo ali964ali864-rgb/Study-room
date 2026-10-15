@@ -1712,54 +1712,31 @@ function drawStudyWorld() {
 // TOP TABLE CHAIRS
 // =========================
 
-// TOP-LEFT CHAIR — faces DOWN
-ctx.save();
-
-ctx.translate(
-  W / 2 - 115 + 75 / 2,
-  270 + 90 / 2
-);
-
-ctx.scale(1, -1);
-
+// TOP-LEFT CHAIR — correct opposite-facing sprite
 ctx.drawImage(
   libraryTileset,
   672,
-  39,
+  101,
   48,
   57,
-  -75 / 2,
-  -90 / 2,
+  W / 2 - 115,
+  270,
   75,
   90
 );
 
-ctx.restore();
-
-
-// TOP-RIGHT CHAIR — faces DOWN
-ctx.save();
-
-ctx.translate(
-  W / 2 + 40 + 75 / 2,
-  270 + 90 / 2
-);
-
-ctx.scale(1, -1);
-
+// TOP-RIGHT CHAIR — correct opposite-facing sprite
 ctx.drawImage(
   libraryTileset,
   672,
-  39,
+  101,
   48,
   57,
-  -75 / 2,
-  -90 / 2,
+  W / 2 + 40,
+  270,
   75,
   90
 );
-
-ctx.restore();
 
 
   // =========================
