@@ -1692,31 +1692,19 @@ function drawStudyWorld() {
     175
   );
   // =========================
-  // LEFT-SIDE PATH / BORDER
+  // RIGHT WALL BORDER
   // =========================
 
   ctx.drawImage(
     libraryTileset,
-    746,
-    193,
-    68,
-    151,
-    15,
-    250,
-    85,
-    190
-  );
-
-  ctx.drawImage(
-    libraryTileset,
-    746,
-    193,
-    68,
-    151,
-    15,
-    440,
-    85,
-    190
+    1440,
+    0,
+    48,
+    160,
+    W - 48,
+    0,
+    48,
+    studyWorld.height
   );
 // =========================
   // MAIN STUDY RUG
