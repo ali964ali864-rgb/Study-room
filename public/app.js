@@ -1779,6 +1779,25 @@ ctx.drawImage(
   90
 );
 
+
+  // =========================
+  // MAIN STUDY TABLE
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    360,
+    216,
+    168,
+    96,
+    W / 2 - 170,
+    330,
+    340,
+    170
+  );
+// =========================
+// STUDY TABLE ITEMS
+// =========================
 // OPEN BOOK — top-left chair
 ctx.drawImage(
   libraryTileset,
@@ -1804,25 +1823,6 @@ ctx.drawImage(
   58,
   42
 );
-  // =========================
-  // MAIN STUDY TABLE
-  // =========================
-
-  ctx.drawImage(
-    libraryTileset,
-    360,
-    216,
-    168,
-    96,
-    W / 2 - 170,
-    330,
-    340,
-    170
-  );
-// =========================
-// STUDY TABLE ITEMS
-// =========================
-
 // OPEN BOOK — left chair
 ctx.drawImage(
   libraryTileset,
