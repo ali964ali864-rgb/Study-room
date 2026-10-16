@@ -1933,6 +1933,22 @@ ctx.drawImage(
   38,
   38
 );
+  // =========================
+// SMALL POTTED PLANT
+// =========================
+
+ctx.drawImage(
+  libraryTileset,
+  24,
+  24,
+  24,
+  24,
+  W - 40,
+  235,
+  38,
+  38
+); 
+
 }
   libraryTileset.onload = () => {
     resizeStudyWorld();
