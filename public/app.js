@@ -41,13 +41,8 @@ socket.on("connect_error", error => {
   console.warn("Socket connection error:", error.message);
 });
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && state) {
-    if (!socket.connected) {
-      socket.connect();
-    } else {
-      socket.disconnect();
-      socket.connect();
-    }
+  if (!document.hidden && state && !socket.connected) {
+    socket.connect();
   }
 });
 let audioContext = null;
