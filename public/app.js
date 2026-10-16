@@ -9,6 +9,37 @@ const timerEl = $("timer"), phaseEl = $("phase"), progressBar = $("progressBar")
 
 let myName = "";
 let state = null;
+socket.on("connect", () => {
+  if (!state || !state.code || !myName) return;
+
+  socket.emit(
+    "join-room",
+    {
+      code: state.code,
+      name: myName
+    },
+    result => {
+      if (!result?.ok) {
+        console.warn("Room reconnect failed:", result?.error);
+        return;
+      }
+
+      state = result.state;
+      renderState();
+      toast("Connection restored");
+    }
+  );
+});
+
+socket.on("disconnect", () => {
+  if (state) {
+    toast("Connection lost — reconnecting...");
+  }
+});
+
+socket.on("connect_error", error => {
+  console.warn("Socket connection error:", error.message);
+});
 let audioContext = null;
 let selectedEmoji = "";
 
