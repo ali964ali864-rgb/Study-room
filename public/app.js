@@ -1930,8 +1930,8 @@ ctx.drawImage(
   24,
   W - 31,
   225,
-  32,
-  32
+  38,
+  38
 );
 }
   libraryTileset.onload = () => {
