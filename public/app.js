@@ -1263,7 +1263,12 @@ const ambienceSelect = $("ambienceSelect");
 const ambienceFiles = {
   rain: "/sounds/rain.mp3",
   nature: "/sounds/Nature.mp3",
-  forest: "/sounds/Forest.mp3"
+  forest: "/sounds/Forest.mp3",
+  cafe: "/sounds/cafe.mp3",
+  fireplace: "/sounds/fireplace.mp3",
+  library: "/sounds/library.mp3",
+  ocean: "/sounds/ocean.mp3",
+  birds: "/sounds/birds.mp3"
 };
 
 function stopAmbience() {
