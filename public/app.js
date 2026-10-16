@@ -1903,7 +1903,21 @@ ctx.drawImage(
     75,
     90
   );
+// =========================
+// RIGHT SIDE TABLE
+// =========================
 
+ctx.drawImage(
+  libraryTileset,
+  312,
+  216,
+  24,
+  144,
+  W - 55,
+  225,
+  30,
+  150
+);
 }
   libraryTileset.onload = () => {
     resizeStudyWorld();
