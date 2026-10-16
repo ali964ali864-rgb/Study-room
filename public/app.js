@@ -1258,7 +1258,7 @@ let noiseNode = null;
 let noiseGain = null;
 
 const ambienceVolume = $("ambienceVolume");
-const ambienceButtons = document.querySelectorAll(".ambience-btn");
+const ambienceSelect = $("ambienceSelect");
 
 const ambienceFiles = {
   rain: "/sounds/rain.mp3",
@@ -1355,26 +1355,16 @@ function playAmbience(type) {
   });
 }
 
-ambienceButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    const sound = button.dataset.sound;
+ambienceSelect.addEventListener("change", () => {
+  const sound = ambienceSelect.value;
 
-    unlockAudio();
+  unlockAudio();
+  playAmbience(sound);
 
-    ambienceButtons.forEach(btn => {
-      btn.classList.toggle(
-        "active",
-        btn.dataset.sound === sound
-      );
-    });
-
-    playAmbience(sound);
-
-    localStorage.setItem(
-      "study-room-ambience",
-      sound
-    );
-  });
+  localStorage.setItem(
+    "study-room-ambience",
+    sound
+  );
 });
 
 ambienceVolume.addEventListener("input", () => {
@@ -1406,12 +1396,7 @@ if (savedAmbienceVolume !== null) {
   ambienceVolume.value = savedAmbienceVolume;
 }
 
-ambienceButtons.forEach(button => {
-  button.classList.toggle(
-    "active",
-    button.dataset.sound === savedAmbience
-  );
-});
+ambienceSelect.value = savedAmbience;
 /* =========================
    BACKGROUND SETTINGS
    ========================= */
