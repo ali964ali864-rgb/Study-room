@@ -1925,13 +1925,13 @@ ctx.drawImage(
 ctx.drawImage(
   libraryTileset,
   24,
-  25,
-  22,
-  42,
+  24,
+  24,
+  24,
   W - 31,
   195,
   22,
-  42
+  22
 );
 }
   libraryTileset.onload = () => {
