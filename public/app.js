@@ -1795,58 +1795,48 @@ ctx.drawImage(
     340,
     170
   );
-// Extra closed book — near left chair
+// =========================
+// STUDY TABLE ITEMS
+// =========================
+
+// OPEN BOOK — left chair
 ctx.drawImage(
   libraryTileset,
-  177,
-  32,
-  32,
+  290,
+  78,
+  48,
+  35,
+  W / 2 - 115,
+  415,
+  58,
+  42
+);
+
+// OPEN BOOK — right chair
+ctx.drawImage(
+  libraryTileset,
+  290,
+  78,
+  48,
+  35,
+  W / 2 + 57,
+  415,
+  58,
+  42
+);
+
+// LAMP — center of table
+ctx.drawImage(
+  libraryTileset,
+  625,
+  125,
   30,
-  W / 2 - 135,
-  420,
-  38,
-  35
-);
-
-// Small stacked books — center-left
-ctx.drawImage(
-  libraryTileset,
-  240,
-  25,
+  43,
+  W / 2 - 15,
+  345,
   30,
-  38,
-  W / 2 - 65,
-  420,
-  32,
-  40
+  43
 );
-
-// Small book — center-right
-ctx.drawImage(
-  libraryTileset,
-  355,
-  80,
-  30,
-  20,
-  W / 2 + 20,
-  420,
-  38,
-  25
-);
-
-// Open book — near right chair
-ctx.drawImage(
-  libraryTileset,
-  292,
-  82,
-  45,
-  28,
-  W / 2 + 75,
-  420,
-  55,
-  34
-);
-
   // =========================
   // BOTTOM TABLE CHAIRS
   // =========================
