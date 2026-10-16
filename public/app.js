@@ -40,6 +40,16 @@ socket.on("disconnect", () => {
 socket.on("connect_error", error => {
   console.warn("Socket connection error:", error.message);
 });
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && state) {
+    if (!socket.connected) {
+      socket.connect();
+    } else {
+      socket.disconnect();
+      socket.connect();
+    }
+  }
+});
 let audioContext = null;
 let selectedEmoji = "";
 
