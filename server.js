@@ -75,7 +75,7 @@ function startTimer(room) {
     }
 
     io.to(room.code).emit("timer", room.timer);
-  }, 250);
+  }, 1000);
 }
 
 function createRoom(code, type="normal") {

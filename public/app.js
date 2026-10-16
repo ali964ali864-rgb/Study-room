@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io();  
 
 const $ = id => document.getElementById(id);
 const lobby = $("lobby"), room = $("room");
@@ -9,6 +9,42 @@ const timerEl = $("timer"), phaseEl = $("phase"), progressBar = $("progressBar")
 
 let myName = "";
 let state = null;
+socket.on("connect", () => {
+  if (!state || !state.code || !myName) return;
+
+  socket.emit(
+    "join-room",
+    {
+      code: state.code,
+      name: myName
+    },
+    result => {
+      if (!result?.ok) {
+        console.warn("Room reconnect failed:", result?.error);
+        return;
+      }
+
+      state = result.state;
+      renderState();
+      toast("Connection restored");
+    }
+  );
+});
+
+socket.on("disconnect", () => {
+  if (state) {
+    toast("Connection lost — reconnecting...");
+  }
+});
+
+socket.on("connect_error", error => {
+  console.warn("Socket connection error:", error.message);
+});
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && state && !socket.connected) {
+    socket.connect();
+  }
+});
 let audioContext = null;
 let selectedEmoji = "";
 
@@ -1222,7 +1258,7 @@ let noiseNode = null;
 let noiseGain = null;
 
 const ambienceVolume = $("ambienceVolume");
-const ambienceButtons = document.querySelectorAll(".ambience-btn");
+const ambienceSelect = $("ambienceSelect");
 
 const ambienceFiles = {
   rain: "/sounds/rain.mp3",
@@ -1319,26 +1355,16 @@ function playAmbience(type) {
   });
 }
 
-ambienceButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    const sound = button.dataset.sound;
+ambienceSelect.addEventListener("change", () => {
+  const sound = ambienceSelect.value;
 
-    unlockAudio();
+  unlockAudio();
+  playAmbience(sound);
 
-    ambienceButtons.forEach(btn => {
-      btn.classList.toggle(
-        "active",
-        btn.dataset.sound === sound
-      );
-    });
-
-    playAmbience(sound);
-
-    localStorage.setItem(
-      "study-room-ambience",
-      sound
-    );
-  });
+  localStorage.setItem(
+    "study-room-ambience",
+    sound
+  );
 });
 
 ambienceVolume.addEventListener("input", () => {
@@ -1370,12 +1396,7 @@ if (savedAmbienceVolume !== null) {
   ambienceVolume.value = savedAmbienceVolume;
 }
 
-ambienceButtons.forEach(button => {
-  button.classList.toggle(
-    "active",
-    button.dataset.sound === savedAmbience
-  );
-});
+ambienceSelect.value = savedAmbience;
 /* =========================
    BACKGROUND SETTINGS
    ========================= */
@@ -1585,46 +1606,221 @@ if (studyWorld) {
   function resizeStudyWorld() {
     const rect = studyWorld.getBoundingClientRect();
 
+    if (rect.width === 0 || rect.height === 0) return;
+
     studyWorld.width = rect.width;
     studyWorld.height = rect.height;
 
     drawStudyWorld();
   }
 
-  function drawStudyWorld() {
-    ctx.clearRect(
-      0,
-      0,
-      studyWorld.width,
-      studyWorld.height
-    );
+function drawStudyWorld() {
+  if (!libraryTileset.complete) return;
 
-    ctx.fillStyle = "#111";
-    ctx.fillRect(
-      0,
-      0,
-      studyWorld.width,
-      studyWorld.height
-    );
+  ctx.clearRect(
+    0,
+    0,
+    studyWorld.width,
+    studyWorld.height
+  );
 
-    if (!libraryTileset.complete) return;
+  ctx.imageSmoothingEnabled = false;
 
-    ctx.imageSmoothingEnabled = false;
+  const W = studyWorld.width;
+  const H = studyWorld.height;
 
-    /*
-      Temporary test:
-      Draw the entire tileset in the corner.
-      We'll replace this with individual tiles
-      once we confirm the image loads correctly.
-    */
+  // =========================
+  // FLOOR
+  // =========================
 
-    ctx.drawImage(
-      libraryTileset,
-      20,
-      20
-    );
+  const tileSize = 48;
+
+  for (let y = 0; y < H; y += tileSize) {
+    for (let x = 0; x < W; x += tileSize) {
+      ctx.drawImage(
+        libraryTileset,
+        24,
+        216,
+        48,
+        48,
+        x,
+        y,
+        tileSize,
+        tileSize
+      );
+      
+    }
   }
 
+  // =========================
+  // BACK WALL
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    936,
+    0,
+    536,
+    165,
+    0,
+    0,
+    W,
+    H * 0.30
+  );
+ // =========================
+  // WALL BOOKSHELVES
+  // =========================
+
+  // Right bookshelf 1
+  ctx.drawImage(
+    libraryTileset,
+    268,
+    384,
+    92,
+    120,
+    W - 315,
+    1,
+    120,
+    160
+  );
+
+  // Right bookshelf 2
+  ctx.drawImage(
+    libraryTileset,
+    148,
+    384,
+    92,
+    120,
+    W - 165,
+    1,
+    120,
+    160
+  );
+
+  // =========================
+  // LARGE CLOCK
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    78,
+    24,
+    72,
+    125,
+    W / 2 - 50,
+    35,
+    100,
+    175
+  );
+ // =========================
+// RIGHT WALL BORDER
+// =========================
+
+ctx.drawImage(
+  libraryTileset,
+  1460,
+  0,
+  12,
+  528,
+  W - 10,
+  15,
+  12,
+  studyWorld.height
+);
+// =========================
+  // MAIN STUDY RUG
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    456,
+    24,
+    168,
+    72,
+    W / 2 - 230,
+    300,
+    460,
+    190
+  );
+
+
+  // =========================
+// TOP TABLE CHAIRS
+// =========================
+
+// TOP-LEFT CHAIR — correct opposite-facing sprite
+ctx.drawImage(
+  libraryTileset,
+  672,
+  101,
+  48,
+  57,
+  W / 2 - 115,
+  270,
+  75,
+  90
+);
+
+// TOP-RIGHT CHAIR — correct opposite-facing sprite
+ctx.drawImage(
+  libraryTileset,
+  672,
+  101,
+  48,
+  57,
+  W / 2 + 40,
+  270,
+  75,
+  90
+);
+
+
+  // =========================
+  // MAIN STUDY TABLE
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    360,
+    216,
+    168,
+    96,
+    W / 2 - 170,
+    330,
+    340,
+    170
+  );
+
+
+  // =========================
+  // BOTTOM TABLE CHAIRS
+  // =========================
+
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    W / 2 - 115,
+    500,
+    75,
+    90
+  );
+
+  ctx.drawImage(
+    libraryTileset,
+    672,
+    39,
+    48,
+    57,
+    W / 2 + 40,
+    500,
+    75,
+    90
+  );
+
+}
   libraryTileset.onload = () => {
     resizeStudyWorld();
   };
@@ -1633,6 +1829,16 @@ if (studyWorld) {
     "resize",
     resizeStudyWorld
   );
+
+  /*
+    Watch for the 2D room becoming visible.
+    This is important because the room starts hidden.
+  */
+  const sceneObserver = new ResizeObserver(() => {
+    resizeStudyWorld();
+  });
+
+  sceneObserver.observe(studyWorld);
 
   resizeStudyWorld();
 }
