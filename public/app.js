@@ -1779,7 +1779,31 @@ ctx.drawImage(
   90
 );
 
+// OPEN BOOK — top-left chair
+ctx.drawImage(
+  libraryTileset,
+  290,
+  78,
+  48,
+  35,
+  W / 2 - 115,
+  300,
+  58,
+  42
+);
 
+// OPEN BOOK — top-right chair
+ctx.drawImage(
+  libraryTileset,
+  290,
+  78,
+  48,
+  35,
+  W / 2 + 57,
+  300,
+  58,
+  42
+);
   // =========================
   // MAIN STUDY TABLE
   // =========================
