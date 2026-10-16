@@ -562,34 +562,14 @@
     <span class="muted">Personal</span>
   </div>
 
-  <div class="ambience-options">
-
-    <button class="ambience-btn active" data-sound="none">
-      🔇<span>Off</span>
-    </button>
-
-    <button class="ambience-btn" data-sound="rain">
-      🌧️<span>Rain</span>
-    </button>
-
-    <button class="ambience-btn" data-sound="nature">
-      🌿<span>Nature</span>
-    </button>
-
-    <button class="ambience-btn" data-sound="forest">
-      🌲<span>Forest</span>
-    </button>
-
-    <button class="ambience-btn" data-sound="white">
-      🤍<span>White</span>
-    </button>
-
-    <button class="ambience-btn" data-sound="brown">
-      🟤<span>Brown</span>
-    </button>
-
-  </div>
-
+ <select id="ambienceSelect" class="ambience-select">
+  <option value="none">🔇 Off</option>
+  <option value="rain">🌧️ Rain</option>
+  <option value="nature">🌿 Nature</option>
+  <option value="forest">🌲 Forest</option>
+  <option value="white">🤍 White Noise</option>
+  <option value="brown">🟤 Brown Noise</option>
+</select>
   <div class="ambience-volume">
     <span>🔊</span>
     <input
