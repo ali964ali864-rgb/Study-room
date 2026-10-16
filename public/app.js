@@ -1795,7 +1795,57 @@ ctx.drawImage(
     340,
     170
   );
+// Extra closed book — near left chair
+ctx.drawImage(
+  libraryTileset,
+  177,
+  32,
+  32,
+  30,
+  W / 2 - 135,
+  420,
+  38,
+  35
+);
 
+// Small stacked books — center-left
+ctx.drawImage(
+  libraryTileset,
+  240,
+  25,
+  30,
+  38,
+  W / 2 - 65,
+  420,
+  32,
+  40
+);
+
+// Small book — center-right
+ctx.drawImage(
+  libraryTileset,
+  355,
+  80,
+  30,
+  20,
+  W / 2 + 20,
+  420,
+  38,
+  25
+);
+
+// Open book — near right chair
+ctx.drawImage(
+  libraryTileset,
+  292,
+  82,
+  45,
+  28,
+  W / 2 + 75,
+  420,
+  55,
+  34
+);
 
   // =========================
   // BOTTOM TABLE CHAIRS
