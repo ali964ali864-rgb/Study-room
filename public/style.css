@@ -148,6 +148,24 @@ button,input{font:inherit} button{cursor:pointer;border:0;color:var(--text)} inp
   border: 0;
   box-shadow: none;
 }
+.ambience-select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border .2s, box-shadow .2s;
+}
+
+.ambience-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(155,140,255,.08);
+}
 
 /* Mobile */
 @media (max-width: 560px) {
