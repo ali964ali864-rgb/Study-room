@@ -1975,7 +1975,29 @@ ctx.drawImage(
   38,
   38
 ); 
+// PLAYER CHARACTERS
+  const users = state?.users || [];
 
+  const seats = [
+    { x: W / 2 - 125, y: 200 },
+    { x: W / 2 + 45, y: 200 },
+    { x: W / 2 - 125, y: 420 },
+    { x: W / 2 + 45, y: 420 }
+  ];
+
+  users.slice(0, 4).forEach((user, index) => {
+    const sprite = characterSprites[user.character];
+    const seat = seats[index];
+
+    if (!sprite || !sprite.complete || !sprite.naturalWidth) return;
+
+    ctx.drawImage(sprite, seat.x, seat.y, 64, 64);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "12px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(user.name, seat.x + 32, seat.y + 76);
+  });
 }
   libraryTileset.onload = () => {
     resizeStudyWorld();
