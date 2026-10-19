@@ -2023,7 +2023,50 @@ window.addEventListener("keydown", e => {
   if (room2d.classList.contains("hidden")) return;
 
   const key = e.key.toLowerCase();
-  if (!["w", "a", "s", "d"].includes(key)) return;
+
+  // Stand up from a chair
+  if (key === "escape" && sitting) {
+    sitting = false;
+    sittingSeat = null;
+    e.preventDefault();
+    return;
+  }
+
+  // Sit on a nearby chair
+  if (key === "e" && !sitting) {
+    const me = state?.users?.find(user => user.id === socket.id);
+    if (!me || !playerPositions[me.id]) return;
+
+    const pos = playerPositions[me.id];
+    const W = studyWorld.width;
+
+    const chairs = [
+      { x: W / 2 - 115, y: 270, sitX: W / 2 - 91, sitY: 245 },
+      { x: W / 2 + 40, y: 270, sitX: W / 2 + 64, sitY: 245 },
+      { x: W / 2 - 115, y: 500, sitX: W / 2 - 91, sitY: 475 },
+      { x: W / 2 + 40, y: 500, sitX: W / 2 + 64, sitY: 475 }
+    ];
+
+    const nearbyChair = chairs.find(chair => {
+      const dx = pos.x - chair.sitX;
+      const dy = pos.y - chair.sitY;
+      return Math.hypot(dx, dy) < 55;
+    });
+
+    if (nearbyChair) {
+      sitting = true;
+      sittingSeat = nearbyChair;
+      pos.x = nearbyChair.sitX;
+      pos.y = nearbyChair.sitY;
+      direction = 3;
+      e.preventDefault();
+    }
+
+    return;
+  }
+
+  // Movement keys
+  if (!["w", "a", "s", "d"].includes(key) || sitting) return;
 
   e.preventDefault();
   movementKeys[key] = true;
