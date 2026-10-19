@@ -29,17 +29,17 @@ function roomState(room) {
   return {
     code: room.code,
     type: room.type,
-    timer: room.timer,
     users: [...room.users.values()].map(u => ({
       id: u.id,
       name: u.name,
-      status: u.status || "studying"
+      status: u.status || "studying",
+      character: u.character || null
     })),
+    timer: room.timer,
     tasks: room.tasks,
     sessionsCompleted: room.sessionsCompleted
   };
 }
-
 function broadcastState(code) {
   const room = getRoom(code);
   if (room) io.to(code).emit("room-state", roomState(room));
