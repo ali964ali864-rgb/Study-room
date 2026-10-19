@@ -2014,11 +2014,16 @@ ctx.drawImage(
 
     const pos = playerPositions[user.id];
     const isMe = user.id === socket.id;
+const playerDirection =
+  isMe ? direction : (playerDirections[user.id] ?? 0);
 
-    const frame = isMe && moving
-      ? Math.floor(animationTime / 8) % 4
-      : 0;
+const playerIsMoving =
+  isMe ? moving : (playerMoving[user.id] ?? false);
+    const frame = playerIsMoving
+  ? Math.floor(animationTime / 8) % 4
+  : 0;
 
+const row = playerDirection;
     const row = isMe ? direction : 0;
 
     ctx.drawImage(
