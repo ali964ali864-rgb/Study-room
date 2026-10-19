@@ -1153,6 +1153,7 @@ socket.on(
       )
     ) {
       renderState();
+      if (!room2d.classList.contains("hidden")) redrawStudyWorld();
     }
   }
 );
@@ -2000,6 +2001,8 @@ ctx.drawImage(
     ctx.fillText(user.name, seat.x + 32, seat.y + 76);
   });
 }
+
+redrawStudyWorld = drawStudyWorld;
   libraryTileset.onload = () => {
     resizeStudyWorld();
   };
