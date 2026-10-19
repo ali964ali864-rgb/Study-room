@@ -2024,15 +2024,20 @@ window.addEventListener("keydown", e => {
 
   const key = e.key.toLowerCase();
 
-  // Stand up from a chair
+  // ESC: stand up and clear all movement keys
   if (key === "escape" && sitting) {
+    e.preventDefault();
     sitting = false;
     sittingSeat = null;
-    e.preventDefault();
+
+    Object.keys(movementKeys).forEach(k => {
+      movementKeys[k] = false;
+    });
+
     return;
   }
 
-  // Sit on a nearby chair
+  // E: sit on a nearby chair
   if (key === "e" && !sitting) {
     const me = state?.users?.find(user => user.id === socket.id);
     if (!me || !playerPositions[me.id]) return;
@@ -2041,10 +2046,13 @@ window.addEventListener("keydown", e => {
     const W = studyWorld.width;
 
     const chairs = [
-      { x: W / 2 - 115, y: 270, sitX: W / 2 - 91, sitY: 245 },
-      { x: W / 2 + 40, y: 270, sitX: W / 2 + 64, sitY: 245 },
-      { x: W / 2 - 115, y: 500, sitX: W / 2 - 91, sitY: 475 },
-      { x: W / 2 + 40, y: 500, sitX: W / 2 + 64, sitY: 475 }
+      // Top chairs: face down toward the screen
+      { sitX: W / 2 - 91, sitY: 245, direction: 0 },
+      { sitX: W / 2 + 64, sitY: 245, direction: 0 },
+
+      // Bottom chairs: face up, showing their backs
+      { sitX: W / 2 - 91, sitY: 475, direction: 3 },
+      { sitX: W / 2 + 64, sitY: 475, direction: 3 }
     ];
 
     const nearbyChair = chairs.find(chair => {
@@ -2054,12 +2062,17 @@ window.addEventListener("keydown", e => {
     });
 
     if (nearbyChair) {
+      e.preventDefault();
       sitting = true;
       sittingSeat = nearbyChair;
+
+      Object.keys(movementKeys).forEach(k => {
+        movementKeys[k] = false;
+      });
+
       pos.x = nearbyChair.sitX;
       pos.y = nearbyChair.sitY;
-      direction = 3;
-      e.preventDefault();
+      direction = nearbyChair.direction;
     }
 
     return;
