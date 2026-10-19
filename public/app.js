@@ -2038,6 +2038,45 @@ window.addEventListener("blur", () => {
   });
 });
 redrawStudyWorld = drawStudyWorld;
+  function canMoveTo(x, y) {
+  const W = studyWorld.width;
+
+  // Check the character's feet, not the whole sprite.
+  const player = {
+    x: x + 12,
+    y: y + 54,
+    w: 24,
+    h: 14
+  };
+
+  const obstacles = [
+    // Main study table
+    { x: W / 2 - 170, y: 330, w: 340, h: 170 },
+
+    // Globe
+    { x: W - 255, y: 245, w: 105, h: 120 },
+
+    // Right-side table
+    { x: W - 35, y: 225, w: 30, h: 150 },
+
+    // Wall bookshelves
+    { x: W - 315, y: 1, w: 120, h: 160 },
+    { x: W - 165, y: 1, w: 120, h: 160 },
+
+    // Room boundaries
+    { x: -20, y: -20, w: W + 40, h: 20 },
+    { x: -20, y: studyWorld.height, w: W + 40, h: 100 },
+    { x: -20, y: 0, w: 20, h: studyWorld.height },
+    { x: W, y: 0, w: 100, h: studyWorld.height }
+  ];
+
+  return !obstacles.some(o =>
+    player.x < o.x + o.w &&
+    player.x + player.w > o.x &&
+    player.y < o.y + o.h &&
+    player.y + player.h > o.y
+  );
+}
   function animateStudyWorld() {
   if (!room2d.classList.contains("hidden")) {
     const me = state?.users?.find(user => user.id === socket.id);
