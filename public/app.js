@@ -1991,7 +1991,7 @@ ctx.drawImage(
 
     if (!sprite || !sprite.complete || !sprite.naturalWidth) return;
 
-    ctx.drawImage(sprite, seat.x, seat.y, 64, 64);
+   console.log("Sprite dimensions:", sprite.naturalWidth, sprite.naturalHeight);
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "12px sans-serif";
