@@ -1616,7 +1616,11 @@ applyBackground(
 /* =========================
    2D GAME CANVAS
    ========================= */
-
+const playerPositions = {};
+const movementKeys = {};
+let direction = 0; // 0 = down, 1 = left, 2 = right, 3 = up
+let moving = false;
+let animationTime = 0;
 const studyWorld = document.getElementById("studyWorld");
 
 if (studyWorld) {
@@ -1975,7 +1979,7 @@ ctx.drawImage(
   38,
   38
 ); 
-// PLAYER CHARACTERS
+// PLAYER CHARACTERS + WASD ANIMATION
   const users = state?.users || [];
 
   const seats = [
@@ -1987,19 +1991,94 @@ ctx.drawImage(
 
   users.slice(0, 4).forEach((user, index) => {
     const sprite = characterSprites[user.character];
-    const seat = seats[index];
-
     if (!sprite || !sprite.complete || !sprite.naturalWidth) return;
 
- ctx.drawImage(sprite, 0, 0, 16, 24, seat.x, seat.y, 48, 72);
+    if (!playerPositions[user.id]) {
+      playerPositions[user.id] = { ...seats[index] };
+    }
+
+    const pos = playerPositions[user.id];
+    const isMe = user.id === socket.id;
+
+    const frame = isMe && moving
+      ? Math.floor(animationTime / 8) % 4
+      : 0;
+
+    const row = isMe ? direction : 0;
+
+    ctx.drawImage(
+      sprite,
+      frame * 16, row * 24, 16, 24,
+      pos.x, pos.y, 48, 72
+    );
+
     ctx.fillStyle = "#ffffff";
     ctx.font = "12px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(user.name, seat.x + 32, seat.y + 104);
+    ctx.fillText(user.name, pos.x + 24, pos.y + 84);
   });
 }
+window.addEventListener("keydown", e => {
+  if (room2d.classList.contains("hidden")) return;
 
+  const key = e.key.toLowerCase();
+  if (!["w", "a", "s", "d"].includes(key)) return;
+
+  e.preventDefault();
+  movementKeys[key] = true;
+});
+
+window.addEventListener("keyup", e => {
+  movementKeys[e.key.toLowerCase()] = false;
+});
+
+window.addEventListener("blur", () => {
+  Object.keys(movementKeys).forEach(key => {
+    movementKeys[key] = false;
+  });
+});
 redrawStudyWorld = drawStudyWorld;
+  function animateStudyWorld() {
+  if (!room2d.classList.contains("hidden")) {
+    const me = state?.users?.find(user => user.id === socket.id);
+
+    if (me && playerPositions[me.id]) {
+      const pos = playerPositions[me.id];
+      const speed = 3;
+
+      moving = false;
+
+      if (movementKeys.w) {
+        pos.y -= speed;
+        direction = 3;
+        moving = true;
+      }
+      if (movementKeys.s) {
+        pos.y += speed;
+        direction = 0;
+        moving = true;
+      }
+      if (movementKeys.a) {
+        pos.x -= speed;
+        direction = 1;
+        moving = true;
+      }
+      if (movementKeys.d) {
+        pos.x += speed;
+        direction = 2;
+        moving = true;
+      }
+
+      if (moving) animationTime++;
+    }
+
+    drawStudyWorld();
+  }
+
+  requestAnimationFrame(animateStudyWorld);
+}
+
+animateStudyWorld();
   libraryTileset.onload = () => {
     resizeStudyWorld();
   };
