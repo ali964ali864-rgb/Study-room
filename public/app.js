@@ -1623,6 +1623,16 @@ if (studyWorld) {
   const ctx = studyWorld.getContext("2d");
 
   const libraryTileset = new Image();
+  const characterSprites = {};
+
+["male1", "male2", "female1", "female2"].forEach(name => {
+  const img = new Image();
+  img.src = `/characters/${name}.png`;
+
+  img.onload = () => drawStudyWorld();
+
+  characterSprites[name] = img;
+});
   libraryTileset.src = "/assets/library/library.png";
 
   function resizeStudyWorld() {
