@@ -273,15 +273,29 @@ socket.on("select-character", ({ character }, reply) => {
 });
 
 function joinRoom(socket, room, name, reply) {
+  if (room.type === "2d" && room.users.size >= 4) {
+    return reply?.({
+      ok: false,
+      error: "This 2D room is full. Maximum 4 players."
+    });
+  }
+
   const cleanName = String(name || "Guest").trim().slice(0, 24) || "Guest";
-  room.users.set(socket.id, { id: socket.id, name: cleanName, status: "studying" });
+
+  room.users.set(socket.id, {
+    id: socket.id,
+    name: cleanName,
+    status: "studying",
+    character: null
+  });
+
   socket.join(room.code);
   socket.data.roomCode = room.code;
   socket.data.name = cleanName;
+
   reply?.({ ok: true, state: roomState(room) });
   broadcastState(room.code);
 }
-
 app.get("*splat", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
