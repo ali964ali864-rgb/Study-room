@@ -308,17 +308,34 @@ document
   });
 
 $("enter2dRoomBtn").onclick = () => {
+  if (!state || !state.code) {
+    toast("You are not in a room.");
+    return;
+  }
 
-  $("characterSelect").classList.add("hidden");
-  room.classList.add("hidden");
-  room2d.classList.remove("hidden");
+  socket.emit(
+    "select-character",
+    { character: selectedCharacter },
+    result => {
+      if (!result?.ok) {
+        toast(result?.error || "Could not select character.");
+        return;
+      }
 
-  $("roomCode2d").textContent =
-    state.code;
+      state = result.state;
 
-  console.log(
-    "Selected character:",
-    selectedCharacter
+      $("characterSelect").classList.add("hidden");
+      room.classList.add("hidden");
+      room2d.classList.remove("hidden");
+
+      $("roomCode2d").textContent = state.code;
+
+      if (typeof drawStudyWorld === "function") {
+        drawStudyWorld();
+      }
+
+      toast("Character selected!");
+    }
   );
 };
 
