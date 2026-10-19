@@ -2024,8 +2024,7 @@ const playerIsMoving =
   : 0;
 
 const row = playerDirection;
-    const row = isMe ? direction : 0;
-
+    
     ctx.drawImage(
       sprite,
       frame * 16, row * 24, 16, 24,
