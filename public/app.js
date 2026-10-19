@@ -2051,8 +2051,8 @@ window.addEventListener("keydown", e => {
       { sitX: W / 2 + 64, sitY: 265, direction: 0 },
 
       // Bottom chairs: face up, showing their backs
-      { sitX: W / 2 - 91, sitY: 455, direction: 4 },
-      { sitX: W / 2 + 64, sitY: 455, direction: 4 }
+      { sitX: W / 2 - 91, sitY: 455, direction: 2 },
+      { sitX: W / 2 + 64, sitY: 455, direction: 2 }
     ];
 
     const nearbyChair = chairs.find(chair => {
