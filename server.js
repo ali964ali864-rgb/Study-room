@@ -233,6 +233,39 @@ socket.on("select-character", ({ character }, reply) => {
 
   reply?.({ ok: true, state: roomState(room) });
 });
+  socket.on("player-move", ({ x, y, direction, moving, sitting }) => {
+  const room = getRoom(socket.data.roomCode);
+
+  if (!room || room.type !== "2d") return;
+
+  const user = room.users.get(socket.id);
+
+  if (!user || !user.character) return;
+
+  const nx = Number(x);
+  const ny = Number(y);
+
+  if (!Number.isFinite(nx) || !Number.isFinite(ny)) {
+    return;
+  }
+
+  user.position = {
+    x: nx,
+    y: ny
+  };
+
+  user.direction = Number(direction) || 0;
+  user.moving = !!moving;
+  user.sitting = !!sitting;
+
+  socket.to(room.code).emit("player-move", {
+    id: socket.id,
+    position: user.position,
+    direction: user.direction,
+    moving: user.moving,
+    sitting: user.sitting
+  });
+});
   socket.on("set-status", ({ status }) => {
     const room = getRoom(socket.data.roomCode);
     if (!room) return;
