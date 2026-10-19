@@ -2131,25 +2131,33 @@ redrawStudyWorld = drawStudyWorld;
 
       moving = false;
 
-     if (movementKeys.w && canMoveTo(pos.x, pos.y - speed)) {
-  pos.y -= speed;
-  direction = 3;
-  moving = true;
-}
-if (movementKeys.s && canMoveTo(pos.x, pos.y + speed)) {
-  pos.y += speed;
-  direction = 0;
-  moving = true;
-}
-if (movementKeys.a && canMoveTo(pos.x - speed, pos.y)) {
-  pos.x -= speed;
-  direction = 1;
-  moving = true;
-}
-if (movementKeys.d && canMoveTo(pos.x + speed, pos.y)) {
-  pos.x += speed;
-  direction = 2;
-  moving = true;
+if (sitting) {
+  pos.x = sittingSeat.x;
+  pos.y = sittingSeat.y;
+} else {
+  if (movementKeys.w && canMoveTo(pos.x, pos.y - speed)) {
+    pos.y -= speed;
+    direction = 3;
+    moving = true;
+  }
+
+  if (movementKeys.s && canMoveTo(pos.x, pos.y + speed)) {
+    pos.y += speed;
+    direction = 0;
+    moving = true;
+  }
+
+  if (movementKeys.a && canMoveTo(pos.x - speed, pos.y)) {
+    pos.x -= speed;
+    direction = 1;
+    moving = true;
+  }
+
+  if (movementKeys.d && canMoveTo(pos.x + speed, pos.y)) {
+    pos.x += speed;
+    direction = 2;
+    moving = true;
+  }
 }
 
       if (moving) animationTime++;
