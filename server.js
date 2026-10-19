@@ -200,7 +200,39 @@ io.on("connection", socket => {
     room.tasks = room.tasks.filter(t => t.id !== id);
     broadcastState(room.code);
   });
+socket.on("select-character", ({ character }, reply) => {
+  const room = getRoom(socket.data.roomCode);
+  if (!room || room.type !== "2d") {
+    return reply?.({ ok: false, error: "Not a 2D room." });
+  }
 
+  const allowedCharacters = ["male1", "male2", "female1", "female2"];
+
+  if (!allowedCharacters.includes(character)) {
+    return reply?.({ ok: false, error: "Invalid character." });
+  }
+
+  const alreadyTaken = [...room.users.values()].some(
+    user => user.id !== socket.id && user.character === character
+  );
+
+  if (alreadyTaken) {
+    return reply?.({
+      ok: false,
+      error: "That character is already taken. Choose another one."
+    });
+  }
+
+  const user = room.users.get(socket.id);
+  if (!user) {
+    return reply?.({ ok: false, error: "You are not in this room." });
+  }
+
+  user.character = character;
+  broadcastState(room.code);
+
+  reply?.({ ok: true, state: roomState(room) });
+});
   socket.on("set-status", ({ status }) => {
     const room = getRoom(socket.data.roomCode);
     if (!room) return;
