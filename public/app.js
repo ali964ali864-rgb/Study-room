@@ -1155,7 +1155,18 @@ socket.on(
     }
   }
 );
+socket.on("player-move", data => {
+  if (!data?.id || !data.position) return;
 
+  playerPositions[data.id] = {
+    x: Number(data.position.x),
+    y: Number(data.position.y)
+  };
+
+  playerDirections[data.id] = Number(data.direction) || 0;
+  playerMoving[data.id] = !!data.moving;
+  playerSitting[data.id] = !!data.sitting;
+});
 
 /* =========================================================
    TIMER UPDATE
@@ -1617,6 +1628,9 @@ applyBackground(
    2D GAME CANVAS
    ========================= */
 const playerPositions = {};
+const playerDirections = {};
+const playerMoving = {};
+const playerSitting = {};
 const movementKeys = {};
 let direction = 0; // 0 = down, 1 = left, 2 = right, 3 = up
 let moving = false;
