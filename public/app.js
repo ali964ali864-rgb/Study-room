@@ -9,6 +9,7 @@ const timerEl = $("timer"), phaseEl = $("phase"), progressBar = $("progressBar")
 
 let myName = "";
 let state = null;
+let redrawStudyWorld = () => {};
 socket.on("connect", () => {
   if (!state || !state.code || !myName) return;
 
