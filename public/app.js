@@ -1622,7 +1622,8 @@ let direction = 0; // 0 = down, 1 = left, 2 = right, 3 = up
 let moving = false;
 let animationTime = 0;
 const studyWorld = document.getElementById("studyWorld");
-
+let sitting = false;
+let sittingSeat = null;
 if (studyWorld) {
   const ctx = studyWorld.getContext("2d");
 
