@@ -2126,7 +2126,8 @@ redrawStudyWorld = drawStudyWorld;
 
   const obstacles = [
     // Main study table
-    { x: W / 2 - 170, y: 330, w: 340, h: 170 },
+    { x: W / 2 - 170, y: 330, w: 340, h: 85 },
+     { x: W / 2 - 170, y: 415, w: 95, h: 85 },
 
     // Globe
     { x: W - 255, y: 245, w: 105, h: 120 },
