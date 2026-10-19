@@ -2144,9 +2144,9 @@ redrawStudyWorld = drawStudyWorld;
 
       moving = false;
 
-if (sitting) {
-  pos.x = sittingSeat.x;
-  pos.y = sittingSeat.y;
+if (sitting && sittingSeat) {
+  pos.x = sittingSeat.sitX;
+  pos.y = sittingSeat.sitY;
 } else {
   if (movementKeys.w && canMoveTo(pos.x, pos.y - speed)) {
     pos.y -= speed;
