@@ -1991,12 +1991,12 @@ ctx.drawImage(
 
     if (!sprite || !sprite.complete || !sprite.naturalWidth) return;
 
-   console.log("Sprite dimensions:", sprite.naturalWidth, sprite.naturalHeight);
+   ctx.drawImage(sprite, seat.x, seat.y, 64, 96);
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "12px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(user.name, seat.x + 32, seat.y + 76);
+    ctx.fillText(user.name, seat.x + 32, seat.y + 104);
   });
 }
 
