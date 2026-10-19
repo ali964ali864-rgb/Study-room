@@ -331,9 +331,7 @@ $("enter2dRoomBtn").onclick = () => {
 
       $("roomCode2d").textContent = state.code;
 
-      if (typeof drawStudyWorld === "function") {
-        drawStudyWorld();
-      }
+     redrawStudyWorld();
 
       toast("Character selected!");
     }
