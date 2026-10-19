@@ -2174,6 +2174,15 @@ if (sitting && sittingSeat) {
 }
 
       if (moving) animationTime++;
+      if (me && playerPositions[me.id]) {
+  socket.emit("player-move", {
+    x: playerPositions[me.id].x,
+    y: playerPositions[me.id].y,
+    direction,
+    moving,
+    sitting
+  });
+}
     }
 
     drawStudyWorld();
