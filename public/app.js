@@ -1991,7 +1991,7 @@ ctx.drawImage(
 
     if (!sprite || !sprite.complete || !sprite.naturalWidth) return;
 
-  ctx.drawImage(sprite, 0, 0, 16, 16, seat.x, seat.y, 64, 64);
+ ctx.drawImage(sprite, 0, 0, 16, 24, seat.x, seat.y, 48, 72);
     ctx.fillStyle = "#ffffff";
     ctx.font = "12px sans-serif";
     ctx.textAlign = "center";
